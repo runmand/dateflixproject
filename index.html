@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dateflix — O plano perfeito para a noite perfeita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --df-bg:#07070f;--df-surface:#0e0e1c;--df-card:#111120;--df-card2:#161626;
+    --df-pink:#FF1744;--df-pink-bright:#FF6D6D;--df-pink-dim:#C40033;
+    --df-navy:#0a0a18;--df-navy2:#12122a;
+    --df-white:#FFFFFF;--df-cream:#EEE8FF;--df-mute:#7878A8;--df-faint:#44445a;
+    --df-gold:#FFD166;--df-gold-dim:#B8902A;
+    --line:rgba(255,23,68,.2);--line2:rgba(255,255,255,.06);
+    --r-lg:20px;--r-md:14px;--r-sm:8px;
+    --shadow-pink:0 20px 50px -18px rgba(255,23,68,.65);
+    --shadow-card:0 8px 32px -8px rgba(0,0,0,.8);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'DM Sans',system-ui,sans-serif;color:var(--df-cream);
+    background:var(--df-bg);
+    background-attachment:fixed;min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  /* cinematic vignette + noise */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 140% 55% at 50% -8%, rgba(255,23,68,.13) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 40% at 95% 20%, rgba(255,23,68,.06), transparent 50%),
+      radial-gradient(ellipse 80% 50% at 0% 85%, rgba(120,0,200,.07), transparent 55%);
+  }
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;}
+  .wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:0 16px 130px}
+
+  /* HEADER */
+  header{padding:28px 0 4px;text-align:center}
+  .df-logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
+  .df-logo-img{height:80px;width:auto;object-fit:contain;
+    filter:drop-shadow(0 0 22px rgba(255,23,68,.6))}
+  .df-divider{width:32px;height:2px;
+    background:linear-gradient(90deg,transparent,#FF1744,transparent);
+    margin:0 auto;border-radius:2px}
+  .df-tagline{font-size:.68rem;font-weight:500;color:var(--df-mute);
+    letter-spacing:.18em;text-transform:uppercase}
+  .df-tagline b{color:var(--df-pink-bright);font-weight:700}
+
+  .panel{display:none;animation:fade .45s var(--ease) both}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .card{background:linear-gradient(170deg, rgba(22,22,38,.95) 0%, rgba(14,14,28,.98) 100%);
+    border:1px solid rgba(255,255,255,.06);
+    border-top:1px solid rgba(255,23,68,.25);
+    border-radius:var(--r-lg);box-shadow:var(--shadow-card), 0 0 0 1px rgba(255,23,68,.04) inset;
+    padding:24px 20px;margin-top:14px;position:relative;overflow:hidden;}
+  .card::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent 0%,var(--df-pink) 30%,var(--df-pink-bright) 55%,transparent 100%);
+    border-radius:var(--r-lg) var(--r-lg) 0 0;}
+
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .sec-head .ic{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;
+    background:linear-gradient(135deg,#FF2D55,#9B0025);
+    box-shadow:0 6px 20px -6px rgba(255,23,68,.75)}
+  .sec-head .ic svg{width:20px;height:20px;stroke:var(--df-white);fill:none;stroke-width:1.8}
+  h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--df-white);letter-spacing:-.01em}
+  .sec-desc{color:var(--df-mute);font-size:.84rem;margin-bottom:16px;line-height:1.55;font-weight:300}
+
+  .btn{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.02em;border:none;border-radius:999px;
+    padding:13px 24px;cursor:pointer;color:#fff;
+    background:linear-gradient(135deg,var(--df-pink),var(--df-pink-dim));
+    box-shadow:0 10px 28px -10px rgba(255,45,85,.8),inset 0 1px 0 rgba(255,255,255,.2);
+    transition:filter .2s var(--ease),box-shadow .2s var(--ease);display:inline-flex;align-items:center;gap:8px;justify-content:center;}
+  .btn:hover{filter:brightness(1.1);box-shadow:0 14px 34px -10px rgba(255,45,85,1)}
+  .btn:active{filter:brightness(.93)}
+  .btn:focus-visible{outline:3px solid var(--df-gold);outline-offset:3px}
+  .btn.gold{background:linear-gradient(135deg,var(--df-gold),var(--df-gold-dim));color:#0a0a14;box-shadow:0 10px 26px -10px rgba(255,209,102,.7)}
+  .btn.ghost{background:transparent;border:1.5px solid var(--line2);color:var(--df-mute);box-shadow:none}
+  .btn.ghost:hover{border-color:var(--df-pink);background:rgba(255,45,85,.08);color:var(--df-cream)}
+  .btn.sm{padding:8px 16px;font-size:.82rem}
+  .btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+
+  /* GENRE PILLS */
+  .filter-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--df-pink-bright);font-weight:700;margin:4px 0 8px}
+  .fpills{display:flex;gap:7px;flex-wrap:wrap}
+  .fpill{cursor:pointer;font-family:inherit;font-weight:600;font-size:.8rem;white-space:nowrap;
+    border:1.5px solid var(--line2);background:rgba(255,255,255,.04);color:var(--df-mute);
+    border-radius:999px;padding:7px 14px;transition:.2s var(--ease)}
+  .fpill:hover{border-color:var(--df-pink);color:var(--df-cream)}
+  .fpill.active{background:linear-gradient(135deg,#FF2D55,#C4003A);border-color:var(--df-pink);color:#fff;box-shadow:0 4px 16px -4px rgba(255,23,68,.65)}
+  .fpill:focus-visible{outline:2px solid var(--df-gold);outline-offset:2px}
+
+  select{font-family:inherit;font-size:.87rem;font-weight:600;color:var(--df-cream);background:rgba(255,255,255,.04);
+    border:1.5px solid var(--line2);border-radius:12px;padding:10px 14px;width:100%;cursor:pointer;
+    appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23FF2D55' stroke-width='2'%3E%3Cpath d='m3 5 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center}
+  select:focus{outline:none;border-color:var(--df-pink)}
+  select option{background:var(--df-card);color:var(--df-cream)}
+
+  /* REEL */
+  .reel{position:relative;min-height:160px;border-radius:var(--r-md);overflow:hidden;
+    background:linear-gradient(160deg,rgba(20,20,36,.95),rgba(10,10,24,.98));
+    border:1px solid rgba(255,23,68,.12);display:grid;place-items:center;text-align:center;padding:22px 18px;
+    box-shadow:inset 0 0 60px rgba(255,23,68,.05),var(--shadow-card);}
+  .reel .spotlight{position:absolute;inset:0;background:radial-gradient(60% 80% at 50% 40%,rgba(255,45,85,.14),transparent 70%);opacity:0;transition:opacity .4s}
+  .reel.win .spotlight{opacity:1}
+  .reel .pick{position:relative;font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.2rem,5.2vw,1.85rem);color:var(--df-white);line-height:1.15}
+  .reel.spin .pick{color:var(--df-faint)}
+  .reel .genre{position:relative;margin-top:6px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--df-pink-bright);min-height:1em}
+  .reel .stream{position:relative;margin-top:9px;font-size:.8rem;color:var(--df-mute);max-width:34ch;opacity:0;transition:opacity .4s}
+  .reel.win .stream{opacity:1}
+  .reel .stream b{color:var(--df-pink-bright);font-weight:700}
+  .reel.win .pick{animation:pop .5s var(--ease)}
+  @keyframes pop{0%{transform:scale(.85);opacity:.4}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+
+  .count-note{font-size:.77rem;color:var(--df-faint);margin-top:10px;text-align:center}
+  .field{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+  input[type=text]{flex:1;min-width:0;font-family:inherit;font-size:.9rem;color:var(--df-cream);
+    background:rgba(255,255,255,.04);border:1.5px solid var(--line2);border-radius:12px;padding:11px 14px;}
+  input[type=text]::placeholder{color:var(--df-faint)}
+  input[type=text]:focus{outline:none;border-color:var(--df-pink)}
+
+  .list-toggle{margin-top:14px;width:100%;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line2);
+    color:var(--df-mute);border-radius:12px;padding:11px 14px;cursor:pointer;font-family:inherit;font-weight:600;font-size:.86rem;
+    display:flex;align-items:center;justify-content:space-between;transition:.2s}
+  .list-toggle:hover{border-color:var(--df-pink);color:var(--df-cream)}
+  .list-toggle svg{width:17px;height:17px;stroke:var(--df-pink);fill:none;stroke-width:2;transition:transform .3s var(--ease)}
+  .list-toggle.open svg{transform:rotate(180deg)}
+  .movie-list{display:none;margin-top:8px;max-height:320px;overflow-y:auto;border:1px solid var(--line2);border-radius:12px;scrollbar-width:thin}
+  .movie-list.open{display:block}
+  .movie-list::-webkit-scrollbar{width:5px}
+  .movie-list::-webkit-scrollbar-thumb{background:var(--df-pink-dim);border-radius:9px}
+  .mrow{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .mrow:last-child{border-bottom:none}
+  .mrow .mt{font-family:'Poppins',sans-serif;color:var(--df-cream);font-size:.88rem;font-weight:500}
+  .mrow .mt small{display:block;font-size:.72rem;color:var(--df-faint);font-weight:500;margin-top:1px}
+  .mrow .ms{font-size:.74rem;color:var(--df-pink-bright);font-weight:700;white-space:nowrap;align-self:start;flex:none}
+  .mrow.custom .ms{color:var(--df-gold)}
+  .mrow .del{background:none;border:none;color:var(--df-faint);cursor:pointer;font-size:1.1rem;align-self:center;padding:0 4px}
+  .mrow .del:hover{color:var(--df-pink)}
+
+  /* FLIP CARD */
+  .flip-stage{perspective:1400px;margin-top:4px}
+  .flip{position:relative;width:100%;min-height:220px;border-radius:var(--r-md);transform-style:preserve-3d;transition:transform .7s var(--ease);cursor:pointer;}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r-md);display:grid;place-items:center;text-align:center;padding:28px 22px;border:1px solid var(--line2);}
+  .face.front{background:linear-gradient(145deg, var(--df-pink-dim), #7a0a2a, #0a0a1a);
+    box-shadow:inset 0 0 60px rgba(255,45,85,.15);}
+  .face.front .label{font-family:'Syne',sans-serif;font-weight:800;font-size:2.6rem;letter-spacing:.04em;color:var(--df-white);text-shadow:0 0 30px rgba(255,23,68,.8)}
+  .face.front .hint{position:absolute;bottom:16px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .face.back{transform:rotateY(180deg);background:var(--df-card2);}
+  .face.back .num{font-family:'Poppins',sans-serif;color:var(--df-pink);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+  .face.back .text{font-family:'Fraunces',serif;font-size:clamp(1rem,4.2vw,1.3rem);color:var(--df-white);line-height:1.4}
+  .deco-heart{position:absolute;top:14px;right:16px;width:24px;height:24px;opacity:.7}
+  .deco-heart svg{width:100%;height:100%;fill:var(--df-pink-bright)}
+
+  /* Q CATS */
+  .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
+  .cat{cursor:pointer;border:1.5px solid var(--line2);border-radius:14px;padding:12px;text-align:center;
+    background:rgba(255,255,255,.03);transition:.22s var(--ease);font-weight:600;color:var(--df-mute);font-size:.85rem;}
+  .cat:hover{border-color:var(--df-pink);color:var(--df-cream)}
+  .cat.active{background:rgba(255,45,85,.15);border-color:var(--df-pink);color:var(--df-white)}
+  .cat span{display:block;font-size:.7rem;font-weight:500;color:var(--df-faint);margin-top:2px}
+  .cat.active span{color:var(--df-pink-bright)}
+  .q-card{margin-top:4px;border-radius:var(--r-md);padding:32px 24px;text-align:center;min-height:160px;display:grid;place-items:center;
+    border:1px solid var(--line2);background:linear-gradient(145deg,var(--df-card2),var(--df-navy));
+    box-shadow:inset 0 0 40px rgba(255,45,85,.05);}
+  .q-card .q{font-family:'Fraunces',serif;font-size:clamp(1.1rem,4.8vw,1.5rem);color:var(--df-white);line-height:1.35;animation:fade .4s var(--ease)}
+  .q-card .ph{color:var(--df-faint);font-style:italic;font-family:'Fraunces',serif}
+
+  /* SCOREBOARD */
+  .scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .player{position:relative;border-radius:var(--r-md);padding:20px 14px 16px;text-align:center;
+    border:1px solid rgba(255,255,255,.06);background:linear-gradient(160deg,rgba(20,20,36,.9),rgba(12,12,24,.95));transition:.3s var(--ease);}
+  .player.lead{border-color:var(--df-pink);box-shadow:0 0 0 1px var(--df-pink),0 16px 36px -20px rgba(255,45,85,.6)}
+  .crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:28px;height:28px;opacity:0;transition:.3s}
+  .crown svg{width:100%;height:100%;fill:var(--df-gold);filter:drop-shadow(0 2px 5px rgba(0,0,0,.4))}
+  .player.lead .crown{opacity:1}
+  .name-wrap{position:relative;display:flex;align-items:center;justify-content:center;gap:5px;
+    border:1.5px dashed rgba(255,255,255,.14);border-radius:10px;padding:5px 10px;
+    transition:.2s;cursor:text;margin-bottom:4px}
+  .name-wrap:hover{border-color:var(--df-pink);background:rgba(255,23,68,.07)}
+  .name-wrap:focus-within{border-color:var(--df-pink);background:rgba(255,23,68,.1);border-style:solid}
+  .name-wrap svg{width:12px;height:12px;stroke:var(--df-faint);flex:none;transition:.2s}
+  .name-wrap:hover svg,.name-wrap:focus-within svg{stroke:var(--df-pink-bright)}
+  .player .name{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--df-cream);
+    background:none;border:none;text-align:center;width:100%;cursor:text;min-width:0}
+  .player .name::placeholder{color:var(--df-faint);font-weight:400}
+  .player .name:focus{outline:none;color:#fff}
+  .player .score{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;line-height:1;color:var(--df-pink);margin:6px 0 12px;
+    text-shadow:0 0 20px rgba(255,45,85,.5);letter-spacing:.04em}
+  .pts{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+  .pts button{border:1.5px solid var(--line2);background:rgba(255,255,255,.04);color:var(--df-cream);font-weight:700;
+    font-family:inherit;border-radius:10px;padding:7px 0;cursor:pointer;transition:.2s;min-width:44px;font-size:.88rem;}
+  .pts button:hover{border-color:var(--df-pink);background:rgba(255,45,85,.1)}
+  .pts button.minus{color:var(--df-faint)}
+  .pts button:focus-visible{outline:2px solid var(--df-gold);outline-offset:2px}
+  .nights{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;
+    border:1.5px solid var(--line2);border-radius:var(--r-md);padding:14px 16px;background:rgba(255,255,255,.02)}
+  .nights .lab{font-family:'Syne',sans-serif;font-size:.95rem;color:var(--df-cream);font-weight:600}
+  .nights .lab span{display:block;font-size:.74rem;color:var(--df-faint);font-weight:400}
+  .nights .ct{display:flex;align-items:center;gap:10px}
+  .nights .ct b{font-family:'Syne',sans-serif;font-weight:800;font-size:1.9rem;color:var(--df-gold);min-width:32px;text-align:center}
+  .round-btn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;border:1.5px solid var(--line2);
+    background:rgba(255,255,255,.04);color:var(--df-cream);font-size:1.3rem;line-height:1;transition:.2s;font-family:inherit}
+  .round-btn:hover{border-color:var(--df-pink);background:rgba(255,45,85,.1)}
+  .reset-row{text-align:center;margin-top:16px}
+
+  /* NAV */
+  nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;display:flex;gap:2px;padding:5px;border-radius:999px;
+    background:rgba(7,7,15,.9);backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.07);
+    box-shadow:0 20px 60px -20px rgba(0,0,0,.98),0 0 0 1px rgba(255,23,68,.06),inset 0 1px 0 rgba(255,255,255,.05);max-width:calc(100% - 20px);}
+  .tab{border:none;background:none;cursor:pointer;color:var(--df-faint);display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 13px;border-radius:999px;transition:.22s var(--ease);min-width:60px;font-family:inherit;font-weight:600;font-size:.63rem;letter-spacing:.01em;}
+  .tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;transition:.22s}
+  .tab:hover{color:var(--df-cream)}
+  .tab.active{color:#fff;background:linear-gradient(135deg,var(--df-pink),var(--df-pink-dim));box-shadow:0 8px 20px -8px rgba(255,45,85,.8)}
+  .tab:focus-visible{outline:2px solid var(--df-gold);outline-offset:2px}
+
+  .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(18px);z-index:40;
+    background:linear-gradient(135deg,#FF1744,#C4003A);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;padding:10px 22px;
+    border-radius:999px;box-shadow:0 12px 28px -10px rgba(255,23,68,.8),inset 0 1px 0 rgba(255,255,255,.15);opacity:0;pointer-events:none;transition:.32s var(--ease);letter-spacing:.02em}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* FOOD ROULETTE */
+  .food-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
+  .food-mode{cursor:pointer;border:1.5px solid var(--line2);border-radius:13px;padding:10px 7px;text-align:center;
+    background:rgba(255,255,255,.03);transition:.22s var(--ease);font-weight:600;font-size:.78rem;color:var(--df-mute);}
+  .food-mode:hover{border-color:var(--df-pink);color:var(--df-cream)}
+  .food-mode.active{background:rgba(255,45,85,.15);border-color:var(--df-pink);color:var(--df-white)}
+  .food-mode .fmicon{font-size:1.35rem;display:block;margin-bottom:3px}
+  .food-mode span{display:block;font-size:.64rem;font-weight:500;color:var(--df-faint);margin-top:2px}
+  .food-mode.active span{color:var(--df-pink-bright)}
+  .food-reel{position:relative;min-height:150px;border-radius:var(--r-md);overflow:hidden;
+    background:linear-gradient(155deg,var(--df-card2),var(--df-navy));
+    border:1px solid var(--line2);display:grid;place-items:center;text-align:center;padding:20px 16px;
+    box-shadow:inset 0 0 40px rgba(255,45,85,.05);}
+  .food-reel .spotlight{position:absolute;inset:0;background:radial-gradient(60% 80% at 50% 40%,rgba(255,45,85,.12),transparent 70%);opacity:0;transition:opacity .4s}
+  .food-reel.win .spotlight{opacity:1}
+  .food-reel .fpick{position:relative;font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.15rem,5vw,1.7rem);color:var(--df-white);line-height:1.2}
+  .food-reel.spin .fpick{color:var(--df-faint)}
+  .food-reel .fcat{position:relative;margin-top:6px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--df-pink-bright);min-height:1em}
+  .food-reel.win .fpick{animation:pop .5s var(--ease)}
+  .food-num-badge{display:inline-block;background:rgba(255,45,85,.12);border:1px solid rgba(255,45,85,.25);
+    border-radius:999px;padding:3px 12px;font-size:.7rem;color:var(--df-pink-bright);font-weight:700;margin-top:5px;position:relative}
+
+  @media (max-width:420px){.tab{min-width:52px;padding:7px 8px}.scoreboard{gap:9px}.player{padding:16px 10px 13px}.food-modes{grid-template-columns:repeat(2,1fr)}}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.05ms !important}.flip{transition:transform .15s linear}}
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse 140% 80% at 50% -10%, rgba(255,23,68,.18), transparent 55%),
+    linear-gradient(180deg,#07070f,#0e0e1c);
+    padding:20px;}
+  #login-screen.hidden{display:none}
+  .login-box{width:100%;max-width:400px;text-align:center}
+
+  .login-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--df-white);
+    letter-spacing:.04em;margin-bottom:4px}
+  .login-sub{font-size:.8rem;color:var(--df-mute);margin-bottom:32px;line-height:1.5}
+  .login-card{background:rgba(17,17,32,.9);border:1px solid rgba(255,255,255,.07);
+    border-top:1px solid rgba(255,23,68,.3);border-radius:20px;padding:28px 24px;
+    box-shadow:0 24px 60px -20px rgba(0,0,0,.9)}
+  .login-step{display:none}
+  .login-step.active{display:block}
+  .login-label{font-size:.72rem;font-weight:600;color:var(--df-mute);letter-spacing:.14em;
+    text-transform:uppercase;text-align:left;margin-bottom:8px}
+  .login-input{width:100%;font-family:'DM Sans',inherit;font-size:1rem;color:#fff;
+    background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.08);
+    border-radius:12px;padding:13px 16px;transition:.2s;margin-bottom:16px}
+  .login-input:focus{outline:none;border-color:var(--df-pink);background:rgba(255,23,68,.06)}
+  .login-input::placeholder{color:var(--df-faint)}
+  .login-btn{width:100%;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;
+    border:none;border-radius:12px;padding:14px;cursor:pointer;color:#fff;
+    background:linear-gradient(135deg,#FF2D55,#C4003A);
+    box-shadow:0 8px 24px -8px rgba(255,23,68,.75);
+    transition:all .2s var(--ease);display:flex;align-items:center;justify-content:center;gap:8px}
+  .login-btn:hover{transform:translateY(-1px);box-shadow:0 14px 32px -8px rgba(255,23,68,.9)}
+  .login-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .login-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+  .otp-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+  .otp-digit{width:48px;height:58px;text-align:center;font-family:'Syne',sans-serif;
+    font-weight:800;font-size:1.6rem;color:#fff;
+    background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);
+    border-radius:12px;transition:.2s}
+  .otp-digit:focus{outline:none;border-color:var(--df-pink);background:rgba(255,23,68,.08)}
+  .login-error{color:#FF6B6B;font-size:.8rem;margin-bottom:12px;min-height:1.2em;text-align:center}
+  .login-back{background:none;border:none;color:var(--df-mute);font-size:.8rem;cursor:pointer;
+    margin-top:14px;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:4px}
+  .login-back:hover{color:var(--df-cream)}
+  .login-resend{background:none;border:none;color:var(--df-pink-bright);font-size:.8rem;
+    cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:4px}
+  .login-resend:disabled{color:var(--df-faint);text-decoration:none;cursor:not-allowed}
+  .login-timer{font-size:.78rem;color:var(--df-faint);margin-top:8px}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjU0IiBoZWlnaHQ9IjEyNTQiIHZpZXdCb3g9IjAgMCAxMjU0IDEyNTQiIGZpbGw9Im5vbmUiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkSWNvbiIgeDE9IjM4MCIgeTE9IjI5MCIgeDI9IjgxMCIgeTI9IjY1MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNEMTAwNEEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjU1IiBzdG9wLWNvbG9yPSIjRkYwRjVGIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGNkE2QSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZFRleHQiIHgxPSI3MDAiIHkxPSI4MzUiIHgyPSIxMDcwIiB5Mj0iODM1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0ZGMjE1RSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjNCNkYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJzb2Z0U2hhZG93IiB4PSIxMDAiIHk9IjczMCIgd2lkdGg9IjYyMCIgaGVpZ2h0PSIyMTAiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSIxMiIgc3RkRGV2aWF0aW9uPSIxNCIgZmxvb2QtY29sb3I9IiNGRkZGRkYiIGZsb29kLW9wYWNpdHk9IjAuMzUiLz4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KCiAgPCEtLSBJY29uIC0tPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTEwKSI+CiAgICA8cGF0aCBkPSJNNDQxIDM2NwogICAgICAgICAgICAgQzQ0MSAzMzMgNDc4IDMxMSA1MDcgMzI4CiAgICAgICAgICAgICBMNzc4IDQ4NQogICAgICAgICAgICAgQzgwOSA1MDMgODA5IDU0OCA3NzggNTY2CiAgICAgICAgICAgICBMNTA3IDcyMwogICAgICAgICAgICAgQzQ3OCA3NDAgNDQxIDcxOCA0NDEgNjg0CiAgICAgICAgICAgICBaIgogICAgICAgICAgZmlsbD0idXJsKCNncmFkSWNvbikiLz4KCiAgICA8IS0tIEhlYXJ0IC0tPgogICAgPHBhdGggZD0iTTU2OSA0MzkKICAgICAgICAgICAgIEM1OTkgNDM5IDYyNSA0NTQgNjQyIDQ3OAogICAgICAgICAgICAgQzY1OSA0NTQgNjg1IDQzOSA3MTUgNDM5CiAgICAgICAgICAgICBDNzY1IDQzOSA4MDIgNDc1IDgwMiA1MjQKICAgICAgICAgICAgIEM4MDIgNTUzIDc5MCA1NzcgNzY5IDU5OAogICAgICAgICAgICAgTDY0MiA3MjIKICAgICAgICAgICAgIEw1MTUgNTk4CiAgICAgICAgICAgICBDNDk0IDU3NyA0ODIgNTUzIDQ4MiA1MjQKICAgICAgICAgICAgIEM0ODIgNDc1IDUxOSA0MzkgNTY5IDQzOVoiCiAgICAgICAgICBmaWxsPSJ3aGl0ZSIvPgoKICAgIDwhLS0gSW5uZXIgcGxheSB0cmlhbmdsZSAtLT4KICAgIDxwYXRoIGQ9Ik02MDMgNTEwCiAgICAgICAgICAgICBDNjAzIDQ5OCA2MTYgNDkxIDYyNiA0OTcKICAgICAgICAgICAgIEw3MDAgNTQxCiAgICAgICAgICAgICBDNzEwIDU0NyA3MTAgNTYxIDcwMCA1NjcKICAgICAgICAgICAgIEw2MjYgNjExCiAgICAgICAgICAgICBDNjE2IDYxNyA2MDMgNjEwIDYwMyA1OThaIgogICAgICAgICAgZmlsbD0idXJsKCNncmFkSWNvbikiLz4KICA8L2c+CgogIDwhLS0gV29yZG1hcmsgLS0+CiAgPGcgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTY4IiBmb250LXdlaWdodD0iNzAwIiBsZXR0ZXItc3BhY2luZz0iNCI+CiAgICA8dGV4dCB4PSIxNjUiIHk9Ijg4MCIgZmlsbD0iI0ZGRkZGRiIgZmlsdGVyPSJ1cmwoI3NvZnRTaGFkb3cpIj5EQVRFPC90ZXh0PgogICAgPHRleHQgeD0iNzAwIiB5PSI4ODAiIGZpbGw9InVybCgjZ3JhZFRleHQpIj5GTElYPC90ZXh0PgogIDwvZz4KPC9zdmc+Cg==" alt="Dateflix"
+      style="height:100px;width:auto;margin-bottom:4px;filter:drop-shadow(0 0 28px rgba(255,23,68,.65))" />
+    <p class="login-sub">Entre com seu e-mail para acessar</p>
+    <div class="login-card">
+
+      <!-- Step 1: Email -->
+      <div class="login-step active" id="step-email">
+        <div class="login-label">Seu e-mail</div>
+        <input class="login-input" id="login-email" type="email" placeholder="seuemail@exemplo.com" autocomplete="email" />
+        <div class="login-error" id="email-error"></div>
+        <button class="login-btn" id="btn-send-code">
+          <svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
+          Enviar código
+        </button>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div class="login-step" id="step-otp">
+        <div class="login-label">Código enviado para <span id="sent-to" style="color:var(--df-pink-bright)"></span></div>
+        <div class="otp-inputs">
+          <input class="otp-digit" maxlength="1" type="tel" />
+          <input class="otp-digit" maxlength="1" type="tel" />
+          <input class="otp-digit" maxlength="1" type="tel" />
+          <input class="otp-digit" maxlength="1" type="tel" />
+          <input class="otp-digit" maxlength="1" type="tel" />
+          <input class="otp-digit" maxlength="1" type="tel" />
+        </div>
+        <div class="login-error" id="otp-error"></div>
+        <button class="login-btn" id="btn-verify">
+          <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          Verificar código
+        </button>
+        <div class="login-timer" id="otp-timer"></div>
+        <button class="login-resend" id="btn-resend" disabled>Reenviar código</button>
+        <br>
+        <button class="login-back" id="btn-back">← Trocar e-mail</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="df-logo-wrap">
+      <img class="df-logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjU0IiBoZWlnaHQ9IjEyNTQiIHZpZXdCb3g9IjAgMCAxMjU0IDEyNTQiIGZpbGw9Im5vbmUiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkSWNvbiIgeDE9IjM4MCIgeTE9IjI5MCIgeDI9IjgxMCIgeTI9IjY1MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNEMTAwNEEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjU1IiBzdG9wLWNvbG9yPSIjRkYwRjVGIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGNkE2QSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZFRleHQiIHgxPSI3MDAiIHkxPSI4MzUiIHgyPSIxMDcwIiB5Mj0iODM1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0ZGMjE1RSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjNCNkYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJzb2Z0U2hhZG93IiB4PSIxMDAiIHk9IjczMCIgd2lkdGg9IjYyMCIgaGVpZ2h0PSIyMTAiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSIxMiIgc3RkRGV2aWF0aW9uPSIxNCIgZmxvb2QtY29sb3I9IiNGRkZGRkYiIGZsb29kLW9wYWNpdHk9IjAuMzUiLz4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KCiAgPCEtLSBJY29uIC0tPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTEwKSI+CiAgICA8cGF0aCBkPSJNNDQxIDM2NwogICAgICAgICAgICAgQzQ0MSAzMzMgNDc4IDMxMSA1MDcgMzI4CiAgICAgICAgICAgICBMNzc4IDQ4NQogICAgICAgICAgICAgQzgwOSA1MDMgODA5IDU0OCA3NzggNTY2CiAgICAgICAgICAgICBMNTA3IDcyMwogICAgICAgICAgICAgQzQ3OCA3NDAgNDQxIDcxOCA0NDEgNjg0CiAgICAgICAgICAgICBaIgogICAgICAgICAgZmlsbD0idXJsKCNncmFkSWNvbikiLz4KCiAgICA8IS0tIEhlYXJ0IC0tPgogICAgPHBhdGggZD0iTTU2OSA0MzkKICAgICAgICAgICAgIEM1OTkgNDM5IDYyNSA0NTQgNjQyIDQ3OAogICAgICAgICAgICAgQzY1OSA0NTQgNjg1IDQzOSA3MTUgNDM5CiAgICAgICAgICAgICBDNzY1IDQzOSA4MDIgNDc1IDgwMiA1MjQKICAgICAgICAgICAgIEM4MDIgNTUzIDc5MCA1NzcgNzY5IDU5OAogICAgICAgICAgICAgTDY0MiA3MjIKICAgICAgICAgICAgIEw1MTUgNTk4CiAgICAgICAgICAgICBDNDk0IDU3NyA0ODIgNTUzIDQ4MiA1MjQKICAgICAgICAgICAgIEM0ODIgNDc1IDUxOSA0MzkgNTY5IDQzOVoiCiAgICAgICAgICBmaWxsPSJ3aGl0ZSIvPgoKICAgIDwhLS0gSW5uZXIgcGxheSB0cmlhbmdsZSAtLT4KICAgIDxwYXRoIGQ9Ik02MDMgNTEwCiAgICAgICAgICAgICBDNjAzIDQ5OCA2MTYgNDkxIDYyNiA0OTcKICAgICAgICAgICAgIEw3MDAgNTQxCiAgICAgICAgICAgICBDNzEwIDU0NyA3MTAgNTYxIDcwMCA1NjcKICAgICAgICAgICAgIEw2MjYgNjExCiAgICAgICAgICAgICBDNjE2IDYxNyA2MDMgNjEwIDYwMyA1OThaIgogICAgICAgICAgZmlsbD0idXJsKCNncmFkSWNvbikiLz4KICA8L2c+CgogIDwhLS0gV29yZG1hcmsgLS0+CiAgPGcgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTY4IiBmb250LXdlaWdodD0iNzAwIiBsZXR0ZXItc3BhY2luZz0iNCI+CiAgICA8dGV4dCB4PSIxNjUiIHk9Ijg4MCIgZmlsbD0iI0ZGRkZGRiIgZmlsdGVyPSJ1cmwoI3NvZnRTaGFkb3cpIj5EQVRFPC90ZXh0PgogICAgPHRleHQgeD0iNzAwIiB5PSI4ODAiIGZpbGw9InVybCgjZ3JhZFRleHQpIj5GTElYPC90ZXh0PgogIDwvZz4KPC9zdmc+Cg==" alt="Dateflix" />
+      <div class="df-divider"></div>
+      <p class="df-tagline">O plano perfeito para a <b>noite perfeita</b></p>
+    </div>
+  </header>
+
+  <section class="panel active" id="panel-sorteador" role="tabpanel" aria-labelledby="tab-sorteador">
+    <div class="card">
+      <div class="sec-head">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h18v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7Z"/><path d="m3 7 3-4h12l3 4"/><path d="m7 3 2 4M12 3l2 4M17 3l2 4"/></svg></span>
+        <h2>Sorteador de filmes</h2>
+      </div>
+      <p class="sec-desc">200 filmes para o Dia dos Namorados, com onde assistir. Filtre por clima e por streaming, e deixe a sorte escolher.</p>
+
+      <div class="filter-label">Gênero</div>
+      <div class="fpills" id="catPills" role="group" aria-label="Filtrar por gênero"></div>
+
+      <div class="filter-label" style="margin-top:14px">Onde assistir</div>
+      <select id="streamFilter" aria-label="Filtrar por serviço de streaming"></select>
+
+      <div class="reel" id="reel" aria-live="polite" style="margin-top:18px">
+        <div class="spotlight"></div>
+        <div>
+          <div class="pick" id="pick">Pronto para a estreia?</div>
+          <div class="genre" id="genre"></div>
+          <div class="stream" id="stream"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <button class="btn gold" id="spinBtn" style="width:100%">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>
+          Sortear o filme da noite
+        </button>
+      </div>
+      <p class="count-note" id="movieCount"></p>
+
+      <div class="field">
+        <input type="text" id="movieInput" placeholder="Adicionar um filme seu à cartela" maxlength="70" aria-label="Nome do filme" />
+        <button class="btn sm" id="addMovie">Adicionar</button>
+      </div>
+
+      <button class="list-toggle" id="listToggle" aria-expanded="false">
+        <span id="listToggleLabel">Ver lista do filtro</span>
+        <svg viewBox="0 0 14 14"><path d="m3 5 4 4 4-4"/></svg>
+      </button>
+      <div class="movie-list" id="movieListBox" aria-label="Lista de filmes do filtro"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-desafios" role="tabpanel" aria-labelledby="tab-desafios">
+    <div class="card">
+      <div class="sec-head">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="11" height="15" rx="2"/><path d="M8 21h11a2 2 0 0 0 2-2V8"/></svg></span>
+        <h2>Cartões de desafios</h2>
+      </div>
+      <p class="sec-desc">Toque na carta para virar e descobrir o desafio da rodada. Boa sorte aos dois.</p>
+      <div class="flip-stage">
+        <div class="flip" id="flip" role="button" tabindex="0" aria-label="Virar carta de desafio">
+          <div class="face front">
+            <div class="deco-heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.5-9C1 9 2.5 5.5 6 5.5c2 0 3.2 1.2 4 2.3.8-1.1 2-2.3 4-2.3 3.5 0 5 3.5 3.5 6.5C19 16.4 12 21 12 21Z"/></svg></div>
+            <div class="label">Desafio</div>
+            <div class="hint">Toque para virar</div>
+          </div>
+          <div class="face back"><div><div class="num" id="challengeNum">Carta</div><div class="text" id="challengeText"></div></div></div>
+        </div>
+      </div>
+      <div style="margin-top:18px">
+        <button class="btn" id="drawChallenge" style="width:100%">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>
+          Sortear novo desafio
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-perguntas" role="tabpanel" aria-labelledby="tab-perguntas">
+    <div class="card">
+      <div class="sec-head">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4 9 9 0 0 1-4-1L3 20l1.1-4A8.5 8.5 0 1 1 21 11.5Z"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.3"/><path d="M12 16h.01"/></svg></span>
+        <h2>Jogos de perguntas</h2>
+      </div>
+      <p class="sec-desc">Escolha um clima e descubram coisas novas um sobre o outro entre uma cena e outra.</p>
+      <div class="cats" id="cats"></div>
+      <div class="q-card"><div class="ph q" id="question">Escolha uma categoria acima e toque em "Próxima pergunta".</div></div>
+      <div style="margin-top:18px">
+        <button class="btn" id="nextQ" style="width:100%">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          Próxima pergunta
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-ranking" role="tabpanel" aria-labelledby="tab-ranking">
+    <div class="card">
+      <div class="sec-head">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>
+        <h2>Ranking do casal</h2>
+      </div>
+      <p class="sec-desc">Marquem pontos nos desafios e perguntas. Toque no nome para editar. A coroa é de quem lidera.</p>
+      <div class="scoreboard">
+        <div class="player" id="p0">
+          <div class="crown" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 8 4 4 5-7 5 7 4-4-2 11H5L3 8Z"/></svg></div>
+          <div class="name-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <input class="name" id="name0" placeholder="Jogador 1" maxlength="20" aria-label="Nome do primeiro par" />
+          </div>
+          <div class="score" id="score0">0</div>
+          <div class="pts"><button data-p="0" data-v="1">+1</button><button data-p="0" data-v="3">+3</button><button data-p="0" data-v="-1" class="minus">−1</button></div>
+        </div>
+        <div class="player" id="p1">
+          <div class="crown" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 8 4 4 5-7 5 7 4-4-2 11H5L3 8Z"/></svg></div>
+          <div class="name-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <input class="name" id="name1" placeholder="Jogador 2" maxlength="20" aria-label="Nome do segundo par" />
+          </div>
+          <div class="score" id="score1">0</div>
+          <div class="pts"><button data-p="1" data-v="1">+1</button><button data-p="1" data-v="3">+3</button><button data-p="1" data-v="-1" class="minus">−1</button></div>
+        </div>
+      </div>
+      <div class="nights">
+        <div class="lab">Noites de cinema<span>O placar da relação</span></div>
+        <div class="ct"><button class="round-btn" id="nightMinus" aria-label="Remover uma noite">−</button><b id="nightCount">0</b><button class="round-btn" id="nightPlus" aria-label="Registrar uma noite">+</button></div>
+      </div>
+      <div class="reset-row"><button class="btn ghost sm" id="resetRanking">Zerar ranking</button></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-comidas" role="tabpanel" aria-labelledby="tab-comidas">
+    <div class="card">
+      <div class="sec-head">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8Z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
+        <h2>Sorteador de comidas</h2>
+      </div>
+      <p class="sec-desc">120 opções para casais — do clássico ao sofisticado. Escolha o clima da noite e deixa o destino decidir o pedido.</p>
+
+      <div class="filter-label">Clima da noite</div>
+      <div class="food-modes" id="foodModes">
+        <button class="food-mode active" data-mode="todos">
+          <span class="fmicon">🎲</span>Tudo
+          <span>Sorteio livre</span>
+        </button>
+        <button class="food-mode" data-mode="romantico">
+          <span class="fmicon">🍝</span>Romântico
+          <span>Clássicos</span>
+        </button>
+        <button class="food-mode" data-mode="descontraido">
+          <span class="fmicon">🍔</span>Descontraído
+          <span>Comfort food</span>
+        </button>
+        <button class="food-mode" data-mode="sofisticado">
+          <span class="fmicon">🍣</span>Chiquezinho
+          <span>Vibe gourmet</span>
+        </button>
+        <button class="food-mode" data-mode="internacional">
+          <span class="fmicon">🌮</span>Internacional
+          <span>Pelo mundo</span>
+        </button>
+        <button class="food-mode" data-mode="doce">
+          <span class="fmicon">🍰</span>Doce Final
+          <span>Sobremesas</span>
+        </button>
+      </div>
+
+      <div class="food-reel" id="foodReel" aria-live="polite">
+        <div class="spotlight"></div>
+        <div>
+          <div class="fpick" id="foodPick">Pronto para escolher o pedido?</div>
+          <div class="fcat" id="foodCat"></div>
+          <div class="food-num-badge" id="foodNum" style="opacity:0"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <button class="btn gold" id="foodSpinBtn" style="width:100%">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>
+          Sortear o pedido da noite
+        </button>
+      </div>
+      <p class="count-note" id="foodCount"></p>
+
+      <div class="field">
+        <input type="text" id="foodInput" placeholder="Sugerir uma comida à cartela" maxlength="60" aria-label="Nome da comida" />
+        <button class="btn sm" id="addFood">Adicionar</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav role="tablist" aria-label="Ferramentas">
+  <button class="tab active" id="tab-sorteador" role="tab" aria-selected="true" data-target="sorteador">
+    <svg viewBox="0 0 24 24"><path d="M3 7h18v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7Z"/><path d="m3 7 3-4h12l3 4"/><path d="m7 3 2 4M12 3l2 4M17 3l2 4"/></svg>Filmes
+  </button>
+  <button class="tab" id="tab-desafios" role="tab" aria-selected="false" data-target="desafios">
+    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="11" height="15" rx="2"/><path d="M8 21h11a2 2 0 0 0 2-2V8"/></svg>Desafios
+  </button>
+  <button class="tab" id="tab-perguntas" role="tab" aria-selected="false" data-target="perguntas">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4 9 9 0 0 1-4-1L3 20l1.1-4A8.5 8.5 0 1 1 21 11.5Z"/></svg>Perguntas
+  </button>
+  <button class="tab" id="tab-ranking" role="tab" aria-selected="false" data-target="ranking">
+    <svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Ranking
+  </button>
+  <button class="tab" id="tab-comidas" role="tab" aria-selected="false" data-target="comidas">
+    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8Z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Comidas
+  </button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+const FILMS=[
+{"t":"Diário de uma Paixão","c":"Romance","s":"Max; Telecine; aluguel/compra: Apple TV e Amazon Video"},
+{"t":"Como Eu Era Antes de Você","c":"Romance","s":"Prime Video; aluguel/compra digital"},
+{"t":"Questão de Tempo","c":"Romance","s":"Prime Video; Globoplay/Telecine; aluguel/compra: Apple TV e Amazon Video"},
+{"t":"Orgulho e Preconceito","c":"Romance","s":"Netflix ou Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"La La Land","c":"Musical","s":"Prime Video ou Telecine, conforme catálogo; aluguel/compra digital"},
+{"t":"Antes do Amanhecer","c":"Romance","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Antes do Pôr-do-Sol","c":"Romance","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Antes da Meia-Noite","c":"Romance","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Simplesmente Acontece","c":"Comédia","s":"Netflix ou Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Um Dia","c":"Romance","s":"Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"Amor à Primeira Vista","c":"Comédia","s":"Netflix"},
+{"t":"Todos Menos Você","c":"Comédia","s":"Max/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Uma Ideia de Você","c":"Romance","s":"Prime Video"},
+{"t":"Harry e Sally","c":"Comédia","s":"Prime Video/MGM+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Cartas para Julieta","c":"Romance","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"PS: Eu Te Amo","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Titanic","c":"Romance","s":"Disney+"},
+{"t":"Ghost: Do Outro Lado da Vida","c":"Romance","s":"Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Guarda-Costas","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Uma Linda Mulher","c":"Comédia","s":"Disney+"},
+{"t":"Amor e Outras Drogas","c":"Romance","s":"Disney+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"10 Coisas que Eu Odeio em Você","c":"Comédia","s":"Disney+"},
+{"t":"Para Todos os Garotos que Já Amei","c":"Comédia","s":"Netflix"},
+{"t":"A Barraca do Beijo","c":"Comédia","s":"Netflix"},
+{"t":"O Date Perfeito","c":"Comédia","s":"Netflix"},
+{"t":"Set It Up","c":"Comédia","s":"Netflix"},
+{"t":"Alguém Especial","c":"Comédia","s":"Netflix"},
+{"t":"Meu Ano em Oxford","c":"Romance","s":"Netflix"},
+{"t":"A Lista da Minha Vida","c":"Romance","s":"Netflix"},
+{"t":"La Dolce Villa","c":"Comédia","s":"Netflix"},
+{"t":"O Lado Bom da Vida","c":"Romance","s":"Max/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Amor Sem Escalas","c":"Romance","s":"Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Casa do Lago","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Enquanto Você Dormia","c":"Comédia","s":"Disney+"},
+{"t":"Sintonia de Amor","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Mensagem para Você","c":"Comédia","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Dirty Dancing","c":"Musical","s":"Prime Video/Lionsgate+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Moulin Rouge!","c":"Musical","s":"Disney+"},
+{"t":"Nasce Uma Estrela","c":"Musical","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Mamma Mia!","c":"Musical","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Casamento do Meu Melhor Amigo","c":"Comédia","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"De Repente 30","c":"Comédia","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Um Lugar Chamado Notting Hill","c":"Comédia","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Bridget Jones","c":"Comédia","s":"Prime Video/Netflix, conforme catálogo; aluguel/compra digital"},
+{"t":"Diário de Bridget Jones","c":"Comédia","s":"Prime Video/Netflix, conforme catálogo; aluguel/compra digital"},
+{"t":"Casamento Grego","c":"Comédia","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Sob o Sol da Toscana","c":"Romance","s":"Disney+"},
+{"t":"Comer Rezar Amar","c":"Romance","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Querido John","c":"Romance","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Um Porto Seguro","c":"Romance","s":"Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Última Música","c":"Romance","s":"Disney+"},
+{"t":"Um Amor para Recordar","c":"Romance","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Melhor de Mim","c":"Romance","s":"Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Noites de Tormenta","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Um Homem de Sorte","c":"Romance","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Escolha","c":"Romance","s":"Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Um Refúgio para a Vida","c":"Romance","s":"Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Me Chame Pelo Seu Nome","c":"Romance","s":"Netflix/Prime Video/MUBI, conforme catálogo; aluguel/compra digital"},
+{"t":"Love, Simon","c":"Comédia","s":"Disney+ ou Max, conforme catálogo"},
+{"t":"Vermelho, Branco e Sangue Azul","c":"Comédia","s":"Prime Video"},
+{"t":"Carol","c":"Romance","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Retrato de uma Jovem em Chamas","c":"Romance","s":"MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Close to You","c":"Romance","s":"Netflix/Prime Video, conforme catálogo; verificar disponibilidade atual"},
+{"t":"A Metade de Nós","c":"Romance","s":"Netflix"},
+{"t":"Moonlight","c":"Romance","s":"Max/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Her / Ela","c":"Ficção","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Brilho Eterno de uma Mente sem Lembranças","c":"Ficção","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Te Amarei para Sempre","c":"Ficção","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Forma da Água","c":"Romance","s":"Disney+"},
+{"t":"Edward Mãos de Tesoura","c":"Romance","s":"Disney+"},
+{"t":"O Curioso Caso de Benjamin Button","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Encontro Marcado","c":"Romance","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Cidade dos Anjos","c":"Romance","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Wall-E","c":"Animação","s":"Disney+"},
+{"t":"Up: Altas Aventuras","c":"Animação","s":"Disney+"},
+{"t":"Elementos","c":"Animação","s":"Disney+"},
+{"t":"A Dama e o Vagabundo","c":"Animação","s":"Disney+"},
+{"t":"Enrolados","c":"Animação","s":"Disney+"},
+{"t":"A Bela e a Fera","c":"Animação","s":"Disney+"},
+{"t":"Encantada","c":"Animação","s":"Disney+"},
+{"t":"O Fabuloso Destino de Amélie Poulain","c":"Comédia","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Medianeras","c":"Romance","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Brooklyn","c":"Romance","s":"Disney+/Star; aluguel/compra digital, conforme catálogo"},
+{"t":"Desejo e Reparação","c":"Romance","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Casablanca","c":"Romance","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Princesa e o Plebeu","c":"Romance","s":"Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Roman Holiday","c":"Romance","s":"Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Amor Além da Vida","c":"Romance","s":"Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Como Se Fosse a Primeira Vez","c":"Comédia","s":"Max/Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Hitch: Conselheiro Amoroso","c":"Comédia","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"O Amor Não Tira Férias","c":"Comédia","s":"Prime Video/Netflix, conforme catálogo; aluguel/compra digital"},
+{"t":"Casa Comigo?","c":"Comédia","s":"Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Apenas Amigos","c":"Comédia","s":"Disney+/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Crazy, Stupid, Love","c":"Comédia","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Amor a Toda Prova","c":"Comédia","s":"Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Palm Springs","c":"Ficção","s":"Prime Video/Disney+, conforme catálogo; aluguel/compra digital"},
+{"t":"O Mapa das Pequenas Coisas Perfeitas","c":"Ficção","s":"Prime Video"},
+{"t":"Música","c":"Comédia","s":"Prime Video"},
+{"t":"O Amor Mandou Mensagem","c":"Romance","s":"Netflix/Prime Video, conforme catálogo; aluguel/compra digital"},
+{"t":"Como Perder um Homem em 10 Dias","c":"Comédia","s":"Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Invocação do Mal","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"Invocação do Mal 2","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"Annabelle","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"A Freira","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"Hereditário","c":"Terror","s":"Prime Video; Diamond Films Amazon Channel; aluguel/compra: Apple TV e Amazon Video"},
+{"t":"Midsommar","c":"Terror","s":"Prime Video/Diamond Films ou aluguel/compra digital, conforme catálogo"},
+{"t":"Corra!","c":"Terror","s":"Prime Video/Netflix/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Nós","c":"Terror","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Telefone Preto","c":"Terror","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Bruxa","c":"Terror","s":"Prime Video/Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"Sorria","c":"Terror","s":"Paramount+; aluguel/compra digital"},
+{"t":"It: A Coisa","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"It: Capítulo 2","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"O Exorcista","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"O Iluminado","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"Doutor Sono","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"O Babadook","c":"Terror","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Entidade","c":"Terror","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Mama","c":"Terror","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Quando as Luzes se Apagam","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"Sobrenatural","c":"Terror","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Sobrenatural: Capítulo 2","c":"Terror","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Ouija: Origem do Mal","c":"Terror","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"REC","c":"Terror","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Atividade Paranormal","c":"Terror","s":"Paramount+; aluguel/compra digital"},
+{"t":"Hell House LLC","c":"Terror","s":"Looke/Booh Amazon Channel, conforme catálogo"},
+{"t":"A Morte do Demônio (2013)","c":"Terror","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Evil Dead Rise","c":"Terror","s":"Max; aluguel/compra digital"},
+{"t":"X","c":"Terror","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Pearl","c":"Terror","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Longlegs / O Colecionador de Almas","c":"Terror","s":"Diamond Films Amazon Channel; aluguel/compra: Apple TV e Amazon Video"},
+{"t":"Fale Comigo","c":"Terror","s":"Prime Video/Diamond Films ou aluguel/compra digital, conforme catálogo"},
+{"t":"Abigail","c":"Terror","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Noites Brutais / Bárbaro","c":"Terror","s":"Max; Telecine; aluguel/compra digital"},
+{"t":"A Substância","c":"Terror","s":"Max; MUBI; Claro tv+; aluguel/compra: Apple TV e Amazon Video"},
+{"t":"Psicose","c":"Suspense","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Se7en","c":"Suspense","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Garota Exemplar","c":"Suspense","s":"Disney+/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Ilha do Medo","c":"Suspense","s":"Netflix/Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Os Suspeitos","c":"Suspense","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Zodíaco","c":"Suspense","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Silêncio dos Inocentes","c":"Suspense","s":"Prime Video/MGM+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Hannibal","c":"Suspense","s":"Prime Video/MGM+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Fragmentado","c":"Suspense","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Corpo Fechado","c":"Suspense","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"Vidro","c":"Suspense","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Homem Invisível","c":"Suspense","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Não! Não Olhe!","c":"Suspense","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Rua Cloverfield, 10","c":"Suspense","s":"Paramount+; aluguel/compra digital"},
+{"t":"Um Lugar Silencioso","c":"Terror","s":"Paramount+; aluguel/compra: Apple TV e Amazon Video"},
+{"t":"Um Lugar Silencioso 2","c":"Terror","s":"Paramount+; Paramount+ Amazon Channel; aluguel/compra digital"},
+{"t":"Bird Box","c":"Suspense","s":"Netflix"},
+{"t":"O Poço","c":"Suspense","s":"Netflix"},
+{"t":"Cisne Negro","c":"Suspense","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"Clube da Luta","c":"Suspense","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Maquinista","c":"Suspense","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Donnie Darko","c":"Suspense","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Coerência","c":"Suspense","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Triângulo do Medo","c":"Suspense","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Identidade","c":"Suspense","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Jogo","c":"Suspense","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"Os Outros","c":"Suspense","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Janela Indiscreta","c":"Suspense","s":"Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Um Corpo que Cai","c":"Suspense","s":"Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Festim Diabólico","c":"Suspense","s":"Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Busca Implacável","c":"Ação","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"John Wick","c":"Ação","s":"Prime Video/Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"John Wick 2","c":"Ação","s":"Prime Video/Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"John Wick 3","c":"Ação","s":"Prime Video/Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"John Wick 4","c":"Ação","s":"Prime Video/Lionsgate+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Mad Max: Estrada da Fúria","c":"Ação","s":"Max; aluguel/compra digital"},
+{"t":"Top Gun: Maverick","c":"Ação","s":"Paramount+; aluguel/compra digital"},
+{"t":"O Protetor","c":"Ação","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Protetor 2","c":"Ação","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Protetor 3","c":"Ação","s":"Netflix/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Missão Impossível: Fallout","c":"Ação","s":"Paramount+; aluguel/compra digital"},
+{"t":"Duro de Matar","c":"Ação","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"Kingsman","c":"Ação","s":"Disney+/Star; aluguel/compra digital"},
+{"t":"O Contador","c":"Ação","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Infiltrado","c":"Suspense","s":"Prime Video/Max ou aluguel/compra digital, conforme catálogo"},
+{"t":"Entre Facas e Segredos","c":"Suspense","s":"Prime Video/Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"Glass Onion","c":"Suspense","s":"Netflix"},
+{"t":"Assassinato no Expresso do Oriente","c":"Suspense","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"Morte no Nilo","c":"Suspense","s":"Disney+"},
+{"t":"O Pálido Olho Azul","c":"Suspense","s":"Netflix"},
+{"t":"Sherlock Holmes","c":"Ação","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Sherlock Holmes: Jogo de Sombras","c":"Ação","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"A Garota no Trem","c":"Suspense","s":"Prime Video/Telecine ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Segredo dos Seus Olhos","c":"Suspense","s":"Prime Video/Netflix/Looke, conforme catálogo"},
+{"t":"Prisioneiros do Caos","c":"Suspense","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Abutre","c":"Suspense","s":"Prime Video/Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Predestinado","c":"Ficção","s":"Prime Video/Looke ou aluguel/compra digital, conforme catálogo"},
+{"t":"Fonte da Vida","c":"Ficção","s":"Disney+/Star ou aluguel/compra digital, conforme catálogo"},
+{"t":"Interestelar","c":"Ficção","s":"Prime Video/Max/Paramount+, conforme catálogo; aluguel/compra digital"},
+{"t":"A Origem","c":"Ficção","s":"Prime Video; Max; Telecine; Universal+ Amazon Channel; aluguel/compra digital"},
+{"t":"Ex Machina","c":"Ficção","s":"Prime Video/Netflix/MUBI ou aluguel/compra digital, conforme catálogo"},
+{"t":"Arrival / A Chegada","c":"Ficção","s":"Prime Video/Paramount+ ou aluguel/compra digital, conforme catálogo"},
+{"t":"Blade Runner 2049","c":"Ficção","s":"Max/Prime Video ou aluguel/compra digital, conforme catálogo"},
+{"t":"Aniquilação","c":"Ficção","s":"Netflix ou aluguel/compra digital, conforme catálogo"},
+{"t":"O Farol","c":"Terror","s":"Prime Video/MUBI ou aluguel/compra digital, conforme catálogo"}
+];
+const PLATFORMS=['Netflix','Prime Video','Max','Disney+','Globoplay','Telecine','Paramount+','Apple TV','MUBI','Lionsgate+','MGM+'];
+
+const store={
+  get(k,fb){try{const v=localStorage.getItem(k);return v===null?fb:JSON.parse(v);}catch(e){return fb;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+};
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+
+const tabs=document.querySelectorAll('.tab');
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  const target=tab.dataset.target;
+  tabs.forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false');});
+  tab.classList.add('active');tab.setAttribute('aria-selected','true');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+target).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});store.set('dncp_tab',target);
+}));
+(function(){const last=store.get('dncp_tab','sorteador');const t=document.getElementById('tab-'+last);if(t&&last!=='sorteador')t.click();})();
+
+/* 1. SORTEADOR */
+const CATS=['Todos','Romance','Comédia','Terror','Suspense','Ação','Ficção','Musical','Animação'];
+let custom=store.get('dncp_custom',[]);
+let activeCat=store.get('dncp_cat_film','Todos');
+let activeStream=store.get('dncp_stream','Todos');
+
+const catPills=document.getElementById('catPills');
+CATS.forEach(c=>{
+  const b=document.createElement('button');
+  b.className='fpill'+(c===activeCat?' active':'');b.textContent=c;b.dataset.cat=c;
+  b.addEventListener('click',()=>{activeCat=c;store.set('dncp_cat_film',c);document.querySelectorAll('.fpill').forEach(p=>p.classList.toggle('active',p.dataset.cat===c));updateCount();renderList();});
+  catPills.appendChild(b);
+});
+const streamSel=document.getElementById('streamFilter');
+['Todos',...PLATFORMS,'Aluguel/Compra'].forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p==='Todos'?'Todos os serviços':p;if(p===activeStream)o.selected=true;streamSel.appendChild(o);});
+streamSel.addEventListener('change',()=>{activeStream=streamSel.value;store.set('dncp_stream',activeStream);updateCount();renderList();});
+
+function allFilms(){return FILMS.concat(custom);}
+function matchStream(f){
+  if(activeStream==='Todos')return true;
+  if(activeStream==='Aluguel/Compra')return /aluguel|compra/i.test(f.s);
+  return f.s.toLowerCase().includes(activeStream.toLowerCase());
+}
+function filtered(){return allFilms().filter(f=>(activeCat==='Todos'||f.c===activeCat)&&matchStream(f));}
+const movieCount=document.getElementById('movieCount');
+function updateCount(){
+  const n=filtered().length;
+  movieCount.textContent=n===0?'Nenhum filme combina com esse filtro.':(n+(n===1?' filme combina':' filmes combinam')+' com o filtro'+(custom.length?` · ${custom.length} seu(s)`:''));
+}
+
+const reel=document.getElementById('reel'),pickEl=document.getElementById('pick'),genreEl=document.getElementById('genre'),streamEl=document.getElementById('stream');
+const spinBtn=document.getElementById('spinBtn');
+let spinning=false;
+spinBtn.addEventListener('click',()=>{
+  if(spinning)return;
+  const pool=filtered();
+  if(pool.length===0){toast('Nenhum filme nesse filtro');return;}
+  reel.classList.remove('win');reel.classList.add('spin');streamEl.textContent='';
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce||pool.length===1){reveal(pool[Math.floor(Math.random()*pool.length)]);reel.classList.remove('spin');spinning=false;return;}
+  spinning=true;let ticks=0;const total=18+Math.floor(Math.random()*8);let delay=45;
+  (function tick(){
+    const m=pool[Math.floor(Math.random()*pool.length)];
+    pickEl.textContent=m.t;genreEl.textContent=m.c;
+    ticks++;
+    if(ticks>=total){reveal(m);spinning=false;return;}
+    delay*=(ticks>total-6)?1.28:1.04;setTimeout(tick,delay);
+  })();
+});
+function reveal(m){
+  reel.classList.remove('spin');reel.classList.add('win');
+  pickEl.textContent=m.t;genreEl.textContent=m.c;
+  streamEl.innerHTML='<b>Onde assistir:</b> '+escapeHtml(m.s);
+}
+
+document.getElementById('addMovie').addEventListener('click',addMovie);
+document.getElementById('movieInput').addEventListener('keydown',e=>{if(e.key==='Enter')addMovie();});
+function addMovie(){
+  const inp=document.getElementById('movieInput');const v=inp.value.trim();if(!v)return;
+  custom.push({t:v,c:'Seus filmes',s:'Da sua lista'});store.set('dncp_custom',custom);inp.value='';
+  updateCount();if(listBox.classList.contains('open'))renderList();toast('Filme adicionado à cartela');
+}
+
+const listToggle=document.getElementById('listToggle'),listBox=document.getElementById('movieListBox'),listLabel=document.getElementById('listToggleLabel');
+listToggle.addEventListener('click',()=>{
+  const open=listBox.classList.toggle('open');listToggle.classList.toggle('open',open);listToggle.setAttribute('aria-expanded',open);
+  if(open)renderList();
+});
+function renderList(){
+  if(!listBox.classList.contains('open'))return;
+  const pool=filtered();
+  listLabel.textContent=`Lista do filtro (${pool.length})`;
+  if(pool.length===0){listBox.innerHTML='<div class="mrow"><span class="mt" style="color:var(--cream-mute)">Nada por aqui. Troque o filtro.</span></div>';return;}
+  const sorted=pool.slice().sort((a,b)=>(a.c==='Seus filmes'?-1:1)-(b.c==='Seus filmes'?-1:1));
+  listBox.innerHTML=sorted.map(f=>{
+    const isCustom=f.c==='Seus filmes';
+    const ci=isCustom?custom.findIndex(x=>x.t===f.t):-1;
+    return `<div class="mrow${isCustom?' custom':''}">
+      <span class="mt">${escapeHtml(f.t)}<small>${escapeHtml(f.c)}</small></span>
+      ${isCustom?`<button class="del" data-i="${ci}" aria-label="Remover ${escapeHtml(f.t)}">×</button>`:`<span class="ms">${escapeHtml(firstPlatform(f.s))}</span>`}
+    </div>`;
+  }).join('');
+}
+function firstPlatform(s){for(const p of PLATFORMS){if(s.toLowerCase().includes(p.toLowerCase()))return p;}if(/aluguel|compra/i.test(s))return 'Aluguel/Compra';return '—';}
+listBox.addEventListener('click',e=>{
+  const b=e.target.closest('button[data-i]');if(!b)return;
+  custom.splice(+b.dataset.i,1);store.set('dncp_custom',custom);updateCount();renderList();
+});
+updateCount();
+
+/* 2. DESAFIOS */
+const CHALLENGES=[
+  'Faça uma massagem de 5 minutos no seu par antes do filme começar.',
+  'Recriem o primeiro encontro de vocês em apenas três frases.',
+  'Escolha uma música e dedique ao seu par, explicando o porquê.',
+  'Beijo de cinema: recriem a cena de beijo mais famosa que conseguirem lembrar.',
+  'Façam a pipoca juntos sem falar nenhuma palavra — só gestos.',
+  'Diga três coisas que você ama no seu par antes dos créditos iniciais.',
+  'Troquem de lugar no sofá e imitem o jeito do outro de assistir a filmes.',
+  'Escrevam um bilhete secreto um para o outro e só leiam no fim do filme.',
+  'Descreva o último sonho bom que você teve com o seu par.',
+  'Inventem juntos um final alternativo para o filme de hoje.',
+  'Olhem nos olhos um do outro por 30 segundos — sem rir, se conseguirem.',
+  'Conte uma lembrança de vocês dois que você nunca esquece.',
+  'Faça uma declaração de amor no estilo do gênero do filme de hoje.',
+  'Vendem os olhos do seu par e ofereçam três petiscos para adivinhar.',
+  'Dancem uma música lenta na sala, mesmo que de um jeito desajeitado.',
+  'Digam, ao mesmo tempo, o filme favorito do outro. Acertou? Marca um ponto.',
+  'Tirem uma selfie estilo "cartaz de cinema" recriando um pôster famoso.',
+  'Prometa uma pequena surpresa para a próxima sessão de cinema.'
+];
+const flip=document.getElementById('flip'),challengeText=document.getElementById('challengeText'),challengeNum=document.getElementById('challengeNum');
+let lastChallenge=-1;
+function drawChallenge(){let i;do{i=Math.floor(Math.random()*CHALLENGES.length);}while(i===lastChallenge&&CHALLENGES.length>1);lastChallenge=i;challengeText.textContent=CHALLENGES[i];challengeNum.textContent='Carta '+(i+1);flip.classList.add('flipped');}
+flip.addEventListener('click',()=>{flip.classList.contains('flipped')?flip.classList.remove('flipped'):drawChallenge();});
+flip.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip.click();}});
+document.getElementById('drawChallenge').addEventListener('click',()=>{if(flip.classList.contains('flipped')){flip.classList.remove('flipped');setTimeout(drawChallenge,420);}else drawChallenge();});
+
+/* 3. PERGUNTAS */
+const QUESTIONS={
+  divertidas:{label:'Divertidas',sub:'Leves & soltas',list:['Se nossa vida virasse um filme, qual seria o título?','Qual personagem de filme mais combina comigo?','Pipoca doce ou salgada — e isso é motivo de briga?','Se pudéssemos entrar em qualquer cenário de filme agora, qual seria?','Qual seria a música de abertura se a gente fosse uma série?','Qual filme você fingiu que gostou só porque eu amava?']},
+  profundas:{label:'Profundas',sub:'De coração',list:['O que te faz se sentir mais amado(a) por mim?','Qual momento nosso você reviveria se pudesse?','Como você imagina a gente daqui a dez anos?','O que você mais admira em quem você está se tornando?','Qual medo você gostaria de superar comigo ao lado?','O que eu faço que te dá uma sensação de "lar"?']},
+  memorias:{label:'Memórias',sub:'Nosso começo',list:['Qual foi o momento exato em que você soube que gostava de mim?','Qual passeio ou viagem nosso ficou marcado pra você?','Qual a primeira coisa que você notou em mim?','Qual foi a melhor risada que demos juntos?','Que detalhe pequeno do nosso início você ainda lembra?','Qual presente meu (ou seu) significou mais do que parecia?']},
+  romance:{label:'Romance',sub:'Só nós dois',list:['Qual foi o nosso beijo mais memorável?','Que gesto meu mais te conquista?','Qual encontro nosso você repetiria hoje à noite?','O que você acha irresistível em mim e nunca disse em voz alta?','Qual seria o cenário perfeito para o nosso próximo date?','Descreva uma noite perfeita a dois em três palavras.']}
+};
+const catsEl=document.getElementById('cats');
+let currentCat=store.get('dncp_cat','divertidas');let lastQ=-1;
+Object.keys(QUESTIONS).forEach(key=>{const c=document.createElement('div');c.className='cat'+(key===currentCat?' active':'');c.tabIndex=0;c.setAttribute('role','button');c.innerHTML=`${QUESTIONS[key].label}<span>${QUESTIONS[key].sub}</span>`;c.dataset.cat=key;c.addEventListener('click',()=>selectCat(key));c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectCat(key);}});catsEl.appendChild(c);});
+function selectCat(key){currentCat=key;store.set('dncp_cat',key);lastQ=-1;document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active',c.dataset.cat===key));nextQuestion();}
+const questionEl=document.getElementById('question');
+function nextQuestion(){const list=QUESTIONS[currentCat].list;let i;do{i=Math.floor(Math.random()*list.length);}while(i===lastQ&&list.length>1);lastQ=i;questionEl.classList.remove('ph');questionEl.textContent=list[i];questionEl.style.animation='none';void questionEl.offsetWidth;questionEl.style.animation='';}
+document.getElementById('nextQ').addEventListener('click',nextQuestion);
+
+/* 4. RANKING */
+let rank=store.get('dncp_rank',{names:['',''],scores:[0,0],nights:0});
+const score0=document.getElementById('score0'),score1=document.getElementById('score1'),name0=document.getElementById('name0'),name1=document.getElementById('name1'),nightCount=document.getElementById('nightCount'),p0=document.getElementById('p0'),p1=document.getElementById('p1');
+function renderRank(){name0.value=rank.names[0]||'';name1.value=rank.names[1]||'';score0.textContent=rank.scores[0];score1.textContent=rank.scores[1];nightCount.textContent=rank.nights;const lead=rank.scores[0]===rank.scores[1]?-1:(rank.scores[0]>rank.scores[1]?0:1);p0.classList.toggle('lead',lead===0);p1.classList.toggle('lead',lead===1);}
+function saveRank(){store.set('dncp_rank',rank);}
+document.querySelectorAll('.pts button').forEach(b=>b.addEventListener('click',()=>{const p=+b.dataset.p,v=+b.dataset.v;rank.scores[p]=Math.max(0,rank.scores[p]+v);saveRank();renderRank();}));
+[name0,name1].forEach((inp,idx)=>{inp.addEventListener('input',()=>{rank.names[idx]=inp.value.trim();saveRank();renderRank();});inp.addEventListener('focus',()=>inp.select());});
+document.getElementById('nightPlus').addEventListener('click',()=>{rank.nights++;saveRank();renderRank();toast('Mais uma noite de cinema!');});
+document.getElementById('nightMinus').addEventListener('click',()=>{rank.nights=Math.max(0,rank.nights-1);saveRank();renderRank();});
+document.getElementById('resetRanking').addEventListener('click',()=>{if(confirm('Zerar pontos e contagem de noites? Os nomes serão mantidos.')){rank.scores=[0,0];rank.nights=0;saveRank();renderRank();toast('Ranking zerado');}});
+renderRank();
+
+/* 5. SORTEADOR DE COMIDAS */
+const FOODS = {
+  romantico: [
+    'Pizza artesanal','Sushi','Temaki','Risoto de camarão','Risoto de queijo brie com damasco',
+    'Massa ao molho Alfredo','Massa à carbonara','Lasanha bolonhesa','Nhoque ao molho quatro queijos',
+    'Ravioli recheado','Filé ao molho madeira','Fondue de queijo','Fondue de chocolate',
+    'Tábua de frios','Tábua de queijos e frutas','Bruschettas','Carpaccio','Ceviche','Paella','Camarão ao alho e óleo'
+  ],
+  descontraido: [
+    'Hambúrguer artesanal','Batata frita com cheddar e bacon','Hot dog gourmet','Frango frito estilo americano',
+    'Pastelzinho com caldo de cana','Esfiha','Kebab','Tacos mexicanos','Burritos','Nachos com queijo',
+    'Coxinha gourmet','Mini sanduíches','Churrasquinho','Espetinhos variados','Poke','Wraps',
+    'Crepe salgado','Tapioca recheada','Panquecas salgadas','Comida de boteco'
+  ],
+  sofisticado: [
+    'Sushi premium','Sashimi variado','Salmão grelhado','Camarão empanado','Lagosta',
+    'Polvo grelhado','Filé mignon com risoto','Medalhão ao molho gorgonzola','Conchiglione recheado',
+    'Ravióli de queijo com molho pesto','Steak com purê de batata','Costela ao molho barbecue',
+    'Magret de pato','Salada caprese','Burrata com tomates','Tartar de salmão','Gnocchi trufado',
+    'Arancini','Crostini','Parmigiana especial'
+  ],
+  internacional: [
+    'Comida mexicana','Comida italiana','Comida japonesa','Comida chinesa','Comida tailandesa',
+    'Comida árabe','Comida francesa','Comida espanhola','Comida indiana','Comida coreana',
+    'Comida peruana','Comida grega','Comida portuguesa','Comida americana','Comida argentina',
+    'Comida mediterrânea','Comida havaiana','Comida turca','Comida vietnamita','Comida brasileira regional'
+  ],
+  doce: [
+    'Brownie com sorvete','Cheesecake','Tiramisu','Petit gâteau','Banoffee',
+    'Morango com chocolate','Waffle com Nutella','Crepe doce','Pavlova','Bolo red velvet',
+    'Bolo de chocolate','Pudim','Mousse de maracujá','Mousse de chocolate','Sorvete artesanal',
+    'Açaí montado','Donuts','Churros','Cookie recheado','Caixa de doces finos'
+  ]
+};
+const FOOD_MODE_LABELS = {romantico:'Clássicos românticos',descontraido:'Comfort food',sofisticado:'Vibe sofisticada',internacional:'Internacional',doce:'Doce final'};
+const FOOD_MODE_EMOJI = {romantico:'🍝',descontraido:'🍔',sofisticado:'🍣',internacional:'🌮',doce:'🍰'};
+
+let activeFoodMode = store.get('dncp_food_mode','todos');
+let lastFood = -1;
+
+let customFoods = store.get('dncp_custom_foods', []);
+
+function getFoodPool() {
+  let pool;
+  if (activeFoodMode === 'todos') pool = Object.entries(FOODS).flatMap(([k,arr])=>arr.map(f=>({f,m:k})));
+  else pool = (FOODS[activeFoodMode]||[]).map(f=>({f,m:activeFoodMode}));
+  return pool.concat(customFoods.map(f=>({f,m:'custom'})));
+}
+
+function updateFoodCount() {
+  const n = getFoodPool().length;
+  document.getElementById('foodCount').textContent = n + ' opção' + (n !== 1 ? 'es' : '') + ' no modo atual';
+}
+
+const foodModeButtons = document.querySelectorAll('.food-mode');
+foodModeButtons.forEach(b => b.addEventListener('click', () => {
+  activeFoodMode = b.dataset.mode;
+  store.set('dncp_food_mode', activeFoodMode);
+  lastFood = -1;
+  foodModeButtons.forEach(x => x.classList.toggle('active', x.dataset.mode === activeFoodMode));
+  updateFoodCount();
+}));
+// restore saved mode
+(function(){
+  const saved = store.get('dncp_food_mode','todos');
+  const btn = document.querySelector(`.food-mode[data-mode="${saved}"]`);
+  if (btn) { foodModeButtons.forEach(x=>x.classList.remove('active')); btn.classList.add('active'); activeFoodMode=saved; }
+})();
+
+const foodReel = document.getElementById('foodReel');
+const foodPickEl = document.getElementById('foodPick');
+const foodCatEl = document.getElementById('foodCat');
+const foodNumEl = document.getElementById('foodNum');
+
+document.getElementById('foodSpinBtn').addEventListener('click', () => {
+  const pool = getFoodPool();
+  if (!pool.length) { toast('Sem opções neste modo!'); return; }
+  foodReel.classList.remove('win'); foodReel.classList.add('spin');
+  let ticks = 0; const maxTicks = 14;
+  const interval = setInterval(() => {
+    const r = pool[Math.floor(Math.random()*pool.length)];
+    foodPickEl.textContent = r.f;
+    foodCatEl.textContent = '';
+    ticks++;
+    if (ticks >= maxTicks) {
+      clearInterval(interval);
+      let idx; do { idx = Math.floor(Math.random()*pool.length); } while (idx===lastFood && pool.length>1);
+      lastFood = idx;
+      const chosen = pool[idx];
+      foodPickEl.textContent = chosen.f;
+      foodCatEl.textContent = chosen.m === 'custom' ? '✨ Sugestão do casal' : (activeFoodMode === 'todos' ? (FOOD_MODE_EMOJI[chosen.m]||'') + ' ' + (FOOD_MODE_LABELS[chosen.m]||'') : '');
+      foodNumEl.textContent = '#' + (Object.values(FOODS).flat().indexOf(chosen.f)+1);
+      foodNumEl.style.opacity = '1';
+      foodReel.classList.remove('spin'); foodReel.classList.add('win');
+      toast('Pedido escolhido! Bom apetite 💕');
+    }
+  }, 80);
+});
+
+updateFoodCount();
+
+document.getElementById('addFood').addEventListener('click', addFood);
+document.getElementById('foodInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFood(); });
+function addFood() {
+  const inp = document.getElementById('foodInput');
+  const v = inp.value.trim();
+  if (!v) return;
+  customFoods.push(v);
+  store.set('dncp_custom_foods', customFoods);
+  inp.value = '';
+  updateFoodCount();
+  toast('Comida adicionada à cartela 🍴');
+}
+
+/* ── LOGIN ── */
+const SUPA_URL = 'https://acyllyiyptjofgvctcvo.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjeWxseWl5cHRqb2ZndmN0Y3ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODM0NDIsImV4cCI6MjA5NTk1OTQ0Mn0.5vNdcoQyNs9uiq3qV9I0nJaf5PPrHApu3DtTdLgb5pg';
+const FUNC_URL = 'https://acyllyiyptjofgvctcvo.supabase.co/functions/v1/sent-otp';
+const SESSION_KEY = 'dncp_session';
+const SESSION_DAYS = 7;
+
+function getSession(){
+  try{
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(s && s.expires > Date.now()) return s;
+  }catch(e){}
+  return null;
+}
+function saveSession(email){
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    email, expires: Date.now() + SESSION_DAYS*24*60*60*1000
+  }));
+}
+
+if(getSession()){
+  document.getElementById('login-screen').classList.add('hidden');
+} else {
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+let currentEmail = '';
+let resendTimer = null;
+
+function startResendTimer(){
+  let secs = 60;
+  const timerEl = document.getElementById('otp-timer');
+  const resendBtn = document.getElementById('btn-resend');
+  resendBtn.disabled = true;
+  timerEl.textContent = `Reenviar em ${secs}s`;
+  resendTimer = setInterval(()=>{
+    secs--;
+    timerEl.textContent = secs > 0 ? `Reenviar em ${secs}s` : '';
+    if(secs <= 0){
+      clearInterval(resendTimer);
+      resendBtn.disabled = false;
+      timerEl.textContent = '';
+    }
+  }, 1000);
+}
+
+async function sendCode(email){
+  const btn = document.getElementById('btn-send-code');
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Enviando...';
+  document.getElementById('email-error').textContent = '';
+  try{
+    const res = await fetch(FUNC_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPA_KEY}`,'apikey':SUPA_KEY},
+      body: JSON.stringify({email})
+    });
+    if(!res.ok) throw new Error('Erro ao enviar');
+    currentEmail = email;
+    document.getElementById('sent-to').textContent = email;
+    document.getElementById('step-email').classList.remove('active');
+    document.getElementById('step-otp').classList.add('active');
+    document.querySelectorAll('.otp-digit')[0].focus();
+    startResendTimer();
+  }catch(e){
+    document.getElementById('email-error').textContent = 'Erro ao enviar o código. Tente novamente.';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg> Enviar código';
+}
+
+async function verifyCode(){
+  const digits = [...document.querySelectorAll('.otp-digit')].map(i=>i.value).join('');
+  if(digits.length < 6){ document.getElementById('otp-error').textContent='Digite os 6 dígitos'; return; }
+  const btn = document.getElementById('btn-verify');
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+  document.getElementById('otp-error').textContent = '';
+  try{
+    const res = await fetch(`${SUPA_URL}/rest/v1/otp_codes?email=eq.${encodeURIComponent(currentEmail)}&code=eq.${digits}&used=eq.false&expires_at=gt.${new Date().toISOString()}&select=id`, {
+      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`}
+    });
+    const data = await res.json();
+    if(!data.length){ document.getElementById('otp-error').textContent='Código inválido ou expirado.'; btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M20 6 9 17l-5-5"/></svg> Verificar código'; return; }
+    // Mark as used
+    await fetch(`${SUPA_URL}/rest/v1/otp_codes?id=eq.${data[0].id}`, {
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({used:true})
+    });
+    saveSession(currentEmail);
+    document.getElementById('login-screen').classList.add('hidden');
+    clearInterval(resendTimer);
+  }catch(e){
+    document.getElementById('otp-error').textContent='Erro ao verificar. Tente novamente.';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M20 6 9 17l-5-5"/></svg> Verificar código';
+}
+
+// OTP input auto-advance
+document.querySelectorAll('.otp-digit').forEach((inp, i, all)=>{
+  inp.addEventListener('input', e=>{
+    const v = e.target.value.replace(/\D/g,'');
+    e.target.value = v ? v[0] : '';
+    if(v && i < all.length-1) all[i+1].focus();
+    if(i === all.length-1 && v) verifyCode();
+  });
+  inp.addEventListener('keydown', e=>{
+    if(e.key==='Backspace' && !inp.value && i>0) all[i-1].focus();
+  });
+  inp.addEventListener('paste', e=>{
+    const paste = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+    if(paste.length===6){
+      all.forEach((d,j)=>d.value=paste[j]||'');
+      all[5].focus();
+      setTimeout(verifyCode, 100);
+    }
+    e.preventDefault();
+  });
+});
+
+document.getElementById('btn-send-code').addEventListener('click', ()=>{
+  const email = document.getElementById('login-email').value.trim();
+  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+    document.getElementById('email-error').textContent='Digite um e-mail válido'; return;
+  }
+  sendCode(email);
+});
+document.getElementById('login-email').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-send-code').click(); });
+document.getElementById('btn-verify').addEventListener('click', verifyCode);
+document.getElementById('btn-back').addEventListener('click', ()=>{
+  document.getElementById('step-otp').classList.remove('active');
+  document.getElementById('step-email').classList.add('active');
+  clearInterval(resendTimer);
+});
+document.getElementById('btn-resend').addEventListener('click', ()=>{ sendCode(currentEmail); });
+
+/* spin animation for loading */
+const spinStyle = document.createElement('style');
+spinStyle.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+document.head.appendChild(spinStyle);
+
+</script>
+</body>
+</html>

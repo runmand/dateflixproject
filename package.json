@@ -1,0 +1,11 @@
+{
+  "name": "dateflix",
+  "version": "1.0.0",
+  "description": "Dateflix — O plano perfeito para a noite perfeita",
+  "scripts": {
+    "start": "npx serve . -p ${PORT:-3000} -s"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}
