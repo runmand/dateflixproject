@@ -1129,6 +1129,65 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   }
 });
 
+/* ── DETECT LANG ── */
+function detectLang(){
+  const saved = localStorage.getItem('dncp_lang');
+  if(saved) return saved;
+  const nav = (navigator.language || navigator.userLanguage || 'pt').toLowerCase().slice(0,2);
+  return ['pt','en','es','fr','it','de','ja'].includes(nav) ? nav : 'en';
+}
+let currentLang = detectLang();
+
+/* ── TRANSLATIONS ── */
+const LANGS = {
+  pt:{logout:'Sair',nav_films:'Filmes',nav_challenges:'Desafios',nav_questions:'Perguntas',nav_ranking:'Ranking',nav_food:'Comidas',tagline:'O plano perfeito para a <b>noite perfeita</b>',login_sub:'Entre com seu e-mail para acessar',login_label:'Seu e-mail',login_placeholder:'seuemail@exemplo.com',login_btn:'Entrar',login_err_invalid:'Digite um e-mail válido',login_err_denied:'❌ Este e-mail não tem acesso ao Dateflix.',login_err_network:'Erro ao verificar. Tente novamente.',login_checking:'Verificando...'},
+  en:{logout:'Logout',nav_films:'Movies',nav_challenges:'Challenges',nav_questions:'Questions',nav_ranking:'Ranking',nav_food:'Food',tagline:'The perfect plan for the <b>perfect night</b>',login_sub:'Enter your email to access',login_label:'Your email',login_placeholder:'youremail@example.com',login_btn:'Enter',login_err_invalid:'Enter a valid email',login_err_denied:'❌ This email does not have access to Dateflix.',login_err_network:'Verification error. Try again.',login_checking:'Checking...'},
+  es:{logout:'Salir',nav_films:'Películas',nav_challenges:'Desafíos',nav_questions:'Preguntas',nav_ranking:'Ranking',nav_food:'Comida',tagline:'El plan perfecto para la <b>noche perfecta</b>',login_sub:'Ingresa tu correo para acceder',login_label:'Tu correo',login_placeholder:'tucorreo@ejemplo.com',login_btn:'Entrar',login_err_invalid:'Ingresa un correo válido',login_err_denied:'❌ Este correo no tiene acceso a Dateflix.',login_err_network:'Error al verificar. Inténtalo de nuevo.',login_checking:'Verificando...'},
+  fr:{logout:'Déconnexion',nav_films:'Films',nav_challenges:'Défis',nav_questions:'Questions',nav_ranking:'Classement',nav_food:'Nourriture',tagline:'Le plan parfait pour la <b>nuit parfaite</b>',login_sub:'Entrez votre email pour accéder',login_label:'Votre email',login_placeholder:'votemail@exemple.com',login_btn:'Entrer',login_err_invalid:'Entrez un email valide',login_err_denied:'❌ Cet email n'a pas accès à Dateflix.',login_err_network:'Erreur de vérification. Réessayez.',login_checking:'Vérification...'},
+  it:{logout:'Esci',nav_films:'Film',nav_challenges:'Sfide',nav_questions:'Domande',nav_ranking:'Classifica',nav_food:'Cibo',tagline:'Il piano perfetto per la <b>notte perfetta</b>',login_sub:'Inserisci la tua email per accedere',login_label:'La tua email',login_placeholder:'tuaemail@esempio.com',login_btn:'Entra',login_err_invalid:'Inserisci un'email valida',login_err_denied:'❌ Questa email non ha accesso a Dateflix.',login_err_network:'Errore di verifica. Riprova.',login_checking:'Verifica...'},
+  de:{logout:'Abmelden',nav_films:'Filme',nav_challenges:'Challenges',nav_questions:'Fragen',nav_ranking:'Rangliste',nav_food:'Essen',tagline:'Der perfekte Plan für die <b>perfekte Nacht</b>',login_sub:'E-Mail eingeben, um zuzugreifen',login_label:'Deine E-Mail',login_placeholder:'deineemail@beispiel.de',login_btn:'Einloggen',login_err_invalid:'Gib eine gültige E-Mail ein',login_err_denied:'❌ Diese E-Mail hat keinen Zugang zu Dateflix.',login_err_network:'Fehler bei der Überprüfung.',login_checking:'Prüfen...'},
+  ja:{logout:'ログアウト',nav_films:'映画',nav_challenges:'チャレンジ',nav_questions:'質問',nav_ranking:'ランキング',nav_food:'料理',tagline:'完璧な夜のための<b>完璧なプラン</b>',login_sub:'メールアドレスを入力してアクセス',login_label:'メールアドレス',login_placeholder:'youremail@example.com',login_btn:'入る',login_err_invalid:'有効なメールアドレスを入力',login_err_denied:'❌ このメールはDateflixにアクセスできません。',login_err_network:'確認エラー。もう一度お試しください。',login_checking:'確認中...'}
+};
+
+function t(key){ return (LANGS[currentLang]||LANGS.en)[key] || (LANGS.en)[key] || key; }
+
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
+  const tg = document.querySelector('.df-tagline'); if(tg) tg.innerHTML = t('tagline');
+  const lsub = document.querySelector('.login-sub'); if(lsub) lsub.textContent = t('login_sub');
+  const llabel = document.querySelector('#login-screen .login-label'); if(llabel) llabel.textContent = t('login_label');
+  const linput = document.getElementById('login-email'); if(linput) linput.placeholder = t('login_placeholder');
+  const langLabel = document.getElementById('langLabel'); if(langLabel) langLabel.textContent = currentLang.toUpperCase();
+  document.querySelectorAll('.lang-opt').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
+}
+
+// Lang switcher
+const langBtn = document.getElementById('langBtn');
+const langMenu = document.getElementById('langMenu');
+if(langBtn) langBtn.addEventListener('click', e => { e.stopPropagation(); langMenu.classList.toggle('open'); });
+document.addEventListener('click', () => { if(langMenu) langMenu.classList.remove('open'); });
+document.querySelectorAll('.lang-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentLang = btn.dataset.lang;
+    localStorage.setItem('dncp_lang', currentLang);
+    langMenu.classList.remove('open');
+    applyLang();
+  });
+});
+
+/* ── LOGOUT ── */
+const logoutBtn = document.getElementById('logoutBtn');
+if(logoutBtn) logoutBtn.addEventListener('click', () => {
+  if(confirm(t('logout') + '?')){
+    localStorage.removeItem('dncp_session');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('login-email').value = '';
+    document.getElementById('email-error').textContent = '';
+  }
+});
+
+applyLang();
+
 </script>
 </body>
 </html>
