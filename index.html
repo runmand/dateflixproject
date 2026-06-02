@@ -286,20 +286,15 @@
   .login-btn:hover{transform:translateY(-1px);box-shadow:0 14px 32px -8px rgba(255,23,68,.9)}
   .login-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
   .login-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
-  .otp-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
-  .otp-digit{width:48px;height:58px;text-align:center;font-family:'Syne',sans-serif;
-    font-weight:800;font-size:1.6rem;color:#fff;
-    background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);
-    border-radius:12px;transition:.2s}
+
+
   .otp-digit:focus{outline:none;border-color:var(--df-pink);background:rgba(255,23,68,.08)}
   .login-error{color:#FF6B6B;font-size:.8rem;margin-bottom:12px;min-height:1.2em;text-align:center}
-  .login-back{background:none;border:none;color:var(--df-mute);font-size:.8rem;cursor:pointer;
-    margin-top:14px;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:4px}
+
   .login-back:hover{color:var(--df-cream)}
-  .login-resend{background:none;border:none;color:var(--df-pink-bright);font-size:.8rem;
-    cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:4px}
+
   .login-resend:disabled{color:var(--df-faint);text-decoration:none;cursor:not-allowed}
-  .login-timer{font-size:.78rem;color:var(--df-faint);margin-top:8px}
+
 </style>
 </head>
 <body>
@@ -1046,9 +1041,8 @@ function addFood() {
 }
 
 /* ── LOGIN ── */
-const SUPA_URL = 'https://acyllyiyptjofgvctcvo.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjeWxseWl5cHRqb2ZndmN0Y3ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODM0NDIsImV4cCI6MjA5NTk1OTQ0Mn0.5vNdcoQyNs9uiq3qV9I0nJaf5PPrHApu3DtTdLgb5pg';
-const FUNC_URL = 'https://acyllyiyptjofgvctcvo.supabase.co/functions/v1/sent-otp';
+const SUPABASE_URL = 'https://acyllyiyptjofgvctcvo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjeWxseWl5cHRqb2ZndmN0Y3ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODM0NDIsImV4cCI6MjA5NTk1OTQ0Mn0.5vNdcoQyNs9uiq3qV9I0nJaf5PPrHApu3DtTdLgb5pg';
 const SESSION_KEY = 'dncp_session';
 const SESSION_DAYS = 7;
 
@@ -1071,123 +1065,43 @@ if(getSession()){
   document.getElementById('login-screen').classList.remove('hidden');
 }
 
-let currentEmail = '';
-let resendTimer = null;
-
-function startResendTimer(){
-  let secs = 60;
-  const timerEl = document.getElementById('otp-timer');
-  const resendBtn = document.getElementById('btn-resend');
-  resendBtn.disabled = true;
-  timerEl.textContent = `Reenviar em ${secs}s`;
-  resendTimer = setInterval(()=>{
-    secs--;
-    timerEl.textContent = secs > 0 ? `Reenviar em ${secs}s` : '';
-    if(secs <= 0){
-      clearInterval(resendTimer);
-      resendBtn.disabled = false;
-      timerEl.textContent = '';
-    }
-  }, 1000);
-}
-
-async function sendCode(email){
+document.getElementById('btn-send-code').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const errEl = document.getElementById('email-error');
   const btn = document.getElementById('btn-send-code');
-  btn.disabled = true;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Enviando...';
-  document.getElementById('email-error').textContent = '';
-  try{
-    const res = await fetch(FUNC_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPA_KEY}`,'apikey':SUPA_KEY},
-      body: JSON.stringify({email})
-    });
-    if(!res.ok) throw new Error('Erro ao enviar');
-    currentEmail = email;
-    document.getElementById('sent-to').textContent = email;
-    document.getElementById('step-email').classList.remove('active');
-    document.getElementById('step-otp').classList.add('active');
-    document.querySelectorAll('.otp-digit')[0].focus();
-    startResendTimer();
-  }catch(e){
-    document.getElementById('email-error').textContent = 'Erro ao enviar o código. Tente novamente.';
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg> Enviar código';
-}
 
-async function verifyCode(){
-  const digits = [...document.querySelectorAll('.otp-digit')].map(i=>i.value).join('');
-  if(digits.length < 6){ document.getElementById('otp-error').textContent='Digite os 6 dígitos'; return; }
-  const btn = document.getElementById('btn-verify');
+  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+    errEl.textContent = 'Digite um e-mail válido'; return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Verificando...';
-  document.getElementById('otp-error').textContent = '';
+  errEl.textContent = '';
+
   try{
-    const res = await fetch(`${SUPA_URL}/rest/v1/otp_codes?email=eq.${encodeURIComponent(currentEmail)}&code=eq.${digits}&used=eq.false&expires_at=gt.${new Date().toISOString()}&select=id`, {
-      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`}
-    });
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/allowed_emails?email=eq.${encodeURIComponent(email)}&select=email`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
     const data = await res.json();
-    if(!data.length){ document.getElementById('otp-error').textContent='Código inválido ou expirado.'; btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M20 6 9 17l-5-5"/></svg> Verificar código'; return; }
-    // Mark as used
-    await fetch(`${SUPA_URL}/rest/v1/otp_codes?id=eq.${data[0].id}`, {
-      method:'PATCH',
-      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body: JSON.stringify({used:true})
-    });
-    saveSession(currentEmail);
-    document.getElementById('login-screen').classList.add('hidden');
-    clearInterval(resendTimer);
-  }catch(e){
-    document.getElementById('otp-error').textContent='Erro ao verificar. Tente novamente.';
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M20 6 9 17l-5-5"/></svg> Verificar código';
-}
 
-// OTP input auto-advance
-document.querySelectorAll('.otp-digit').forEach((inp, i, all)=>{
-  inp.addEventListener('input', e=>{
-    const v = e.target.value.replace(/\D/g,'');
-    e.target.value = v ? v[0] : '';
-    if(v && i < all.length-1) all[i+1].focus();
-    if(i === all.length-1 && v) verifyCode();
-  });
-  inp.addEventListener('keydown', e=>{
-    if(e.key==='Backspace' && !inp.value && i>0) all[i-1].focus();
-  });
-  inp.addEventListener('paste', e=>{
-    const paste = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
-    if(paste.length===6){
-      all.forEach((d,j)=>d.value=paste[j]||'');
-      all[5].focus();
-      setTimeout(verifyCode, 100);
+    if(!data.length){
+      errEl.textContent = '❌ Este e-mail não tem acesso ao Dateflix.';
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M20 6 9 17l-5-5"/></svg> Entrar';
+      return;
     }
-    e.preventDefault();
-  });
-});
 
-document.getElementById('btn-send-code').addEventListener('click', ()=>{
-  const email = document.getElementById('login-email').value.trim();
-  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
-    document.getElementById('email-error').textContent='Digite um e-mail válido'; return;
+    saveSession(email);
+    document.getElementById('login-screen').classList.add('hidden');
+
+  }catch(e){
+    errEl.textContent = 'Erro ao verificar. Tente novamente.';
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M20 6 9 17l-5-5"/></svg> Entrar';
   }
-  sendCode(email);
 });
-document.getElementById('login-email').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-send-code').click(); });
-document.getElementById('btn-verify').addEventListener('click', verifyCode);
-document.getElementById('btn-back').addEventListener('click', ()=>{
-  document.getElementById('step-otp').classList.remove('active');
-  document.getElementById('step-email').classList.add('active');
-  clearInterval(resendTimer);
+
+document.getElementById('login-email').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('btn-send-code').click();
 });
-document.getElementById('btn-resend').addEventListener('click', ()=>{ sendCode(currentEmail); });
-
-/* spin animation for loading */
-const spinStyle = document.createElement('style');
-spinStyle.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
-document.head.appendChild(spinStyle);
-
-</script>
-</body>
-</html>
