@@ -37,7 +37,7 @@
   body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.025;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     mix-blend-mode:overlay;}
-  .wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:44px 16px 130px}
+  .wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:52px 16px 130px}
 
   /* HEADER */
   header{padding:28px 0 4px;text-align:center}
@@ -256,7 +256,7 @@
   @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.05ms !important}.flip{transition:transform .15s linear}}
 
   /* ── LOGIN SCREEN ── */
-  #login-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  #login-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding-top:48px;
     background:radial-gradient(ellipse 140% 80% at 50% -10%, rgba(255,23,68,.18), transparent 55%),
     linear-gradient(180deg,#07070f,#0e0e1c);
     padding:20px;}
