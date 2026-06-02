@@ -1119,6 +1119,16 @@ document.getElementById('btn-send-code').addEventListener('click', async () => {
 document.getElementById('login-email').addEventListener('keydown', e => {
   if(e.key === 'Enter') document.getElementById('btn-send-code').click();
 });
+/* ── LOGOUT ── */
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  if(confirm('Deseja sair do Dateflix?')){
+    localStorage.removeItem('dncp_session');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('login-email').value = '';
+    document.getElementById('email-error').textContent = '';
+  }
+});
+
 </script>
 </body>
 </html>
