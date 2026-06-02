@@ -1129,631 +1129,286 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   }
 });
 
-/* ── DETECT LANG ── */
+
+/* ══════════════════════════════════════════════
+   I18N — detect, translate, switch
+   ══════════════════════════════════════════════ */
+
+// 1. Detect language
 function detectLang(){
   const saved = localStorage.getItem('dncp_lang');
   if(saved) return saved;
-  const nav = (navigator.language || navigator.userLanguage || 'pt').toLowerCase().slice(0,2);
+  const nav = (navigator.language||'pt').toLowerCase().slice(0,2);
   return ['pt','en','es','fr','it','de','ja'].includes(nav) ? nav : 'en';
 }
 let currentLang = detectLang();
 
-/* ── TRANSLATIONS ── */
-const LANGS = {
+// 2. Translation tables
+const TR = {
   pt:{logout:'Sair',nav_films:'Filmes',nav_challenges:'Desafios',nav_questions:'Perguntas',nav_ranking:'Ranking',nav_food:'Comidas',tagline:'O plano perfeito para a <b>noite perfeita</b>',login_sub:'Entre com seu e-mail para acessar',login_label:'Seu e-mail',login_placeholder:'seuemail@exemplo.com',login_btn:'Entrar',login_err_invalid:'Digite um e-mail válido',login_err_denied:'❌ Este e-mail não tem acesso ao Dateflix.',login_err_network:'Erro ao verificar. Tente novamente.',login_checking:'Verificando...'},
   en:{logout:'Logout',nav_films:'Movies',nav_challenges:'Challenges',nav_questions:'Questions',nav_ranking:'Ranking',nav_food:'Food',tagline:'The perfect plan for the <b>perfect night</b>',login_sub:'Enter your email to access',login_label:'Your email',login_placeholder:'youremail@example.com',login_btn:'Enter',login_err_invalid:'Enter a valid email',login_err_denied:'❌ This email does not have access to Dateflix.',login_err_network:'Verification error. Try again.',login_checking:'Checking...'},
-  es:{logout:'Salir',nav_films:'Películas',nav_challenges:'Desafíos',nav_questions:'Preguntas',nav_ranking:'Ranking',nav_food:'Comida',tagline:'El plan perfecto para la <b>noche perfecta</b>',login_sub:'Ingresa tu correo para acceder',login_label:'Tu correo',login_placeholder:'tucorreo@ejemplo.com',login_btn:'Entrar',login_err_invalid:'Ingresa un correo válido',login_err_denied:'❌ Este correo no tiene acceso a Dateflix.',login_err_network:'Error al verificar. Inténtalo de nuevo.',login_checking:'Verificando...'},
-  fr:{logout:'Déconnexion',nav_films:'Films',nav_challenges:'Défis',nav_questions:'Questions',nav_ranking:'Classement',nav_food:'Nourriture',tagline:'Le plan parfait pour la <b>nuit parfaite</b>',login_sub:'Entrez votre email pour accéder',login_label:'Votre email',login_placeholder:'votemail@exemple.com',login_btn:'Entrer',login_err_invalid:'Entrez un email valide',login_err_denied:'❌ Cet email n\'a pas accès à Dateflix.',login_err_network:'Erreur de vérification. Réessayez.',login_checking:'Vérification...'},
-  it:{logout:'Esci',nav_films:'Film',nav_challenges:'Sfide',nav_questions:'Domande',nav_ranking:'Classifica',nav_food:'Cibo',tagline:'Il piano perfetto per la <b>notte perfetta</b>',login_sub:'Inserisci la tua email per accedere',login_label:'La tua email',login_placeholder:'tuaemail@esempio.com',login_btn:'Entra',login_err_invalid:'Inserisci un\'email valida',login_err_denied:'❌ Questa email non ha accesso a Dateflix.',login_err_network:'Errore di verifica. Riprova.',login_checking:'Verifica...'},
-  de:{logout:'Abmelden',nav_films:'Filme',nav_challenges:'Challenges',nav_questions:'Fragen',nav_ranking:'Rangliste',nav_food:'Essen',tagline:'Der perfekte Plan für die <b>perfekte Nacht</b>',login_sub:'E-Mail eingeben, um zuzugreifen',login_label:'Deine E-Mail',login_placeholder:'deineemail@beispiel.de',login_btn:'Einloggen',login_err_invalid:'Gib eine gültige E-Mail ein',login_err_denied:'❌ Diese E-Mail hat keinen Zugang zu Dateflix.',login_err_network:'Fehler bei der Überprüfung.',login_checking:'Prüfen...'},
-  ja:{logout:'ログアウト',nav_films:'映画',nav_challenges:'チャレンジ',nav_questions:'質問',nav_ranking:'ランキング',nav_food:'料理',tagline:'完璧な夜のための<b>完璧なプラン</b>',login_sub:'メールアドレスを入力してアクセス',login_label:'メールアドレス',login_placeholder:'youremail@example.com',login_btn:'入る',login_err_invalid:'有効なメールアドレスを入力',login_err_denied:'❌ このメールはDateflixにアクセスできません。',login_err_network:'確認エラー。もう一度お試しください。',login_checking:'確認中...'}
+  es:{logout:'Salir',nav_films:'Películas',nav_challenges:'Desafíos',nav_questions:'Preguntas',nav_ranking:'Ranking',nav_food:'Comida',tagline:'El plan perfecto para la <b>noche perfecta</b>',login_sub:'Ingresa tu correo para acceder',login_label:'Tu correo',login_placeholder:'tucorreo@ejemplo.com',login_btn:'Entrar',login_err_invalid:'Ingresa un correo válido',login_err_denied:'❌ Este correo no tiene acceso a Dateflix.',login_err_network:'Error al verificar.',login_checking:'Verificando...'},
+  fr:{logout:'Déconnexion',nav_films:'Films',nav_challenges:'Défis',nav_questions:'Questions',nav_ranking:'Classement',nav_food:'Nourriture',tagline:'Le plan parfait pour la <b>nuit parfaite</b>',login_sub:'Entrez votre email pour accéder',login_label:'Votre email',login_placeholder:'votemail@exemple.com',login_btn:'Entrer',login_err_invalid:'Entrez un email valide',login_err_denied:'❌ Cet email n\'a pas accès à Dateflix.',login_err_network:'Erreur de vérification.',login_checking:'Vérification...'},
+  it:{logout:'Esci',nav_films:'Film',nav_challenges:'Sfide',nav_questions:'Domande',nav_ranking:'Classifica',nav_food:'Cibo',tagline:'Il piano perfetto per la <b>notte perfetta</b>',login_sub:'Inserisci la tua email per accedere',login_label:'La tua email',login_placeholder:'tuaemail@esempio.com',login_btn:'Entra',login_err_invalid:'Inserisci un\'email valida',login_err_denied:'❌ Questa email non ha accesso a Dateflix.',login_err_network:'Errore di verifica.',login_checking:'Verifica...'},
+  de:{logout:'Abmelden',nav_films:'Filme',nav_challenges:'Challenges',nav_questions:'Fragen',nav_ranking:'Rangliste',nav_food:'Essen',tagline:'Der perfekte Plan für die <b>perfekte Nacht</b>',login_sub:'E-Mail eingeben um zuzugreifen',login_label:'Deine E-Mail',login_placeholder:'email@beispiel.de',login_btn:'Einloggen',login_err_invalid:'Gib eine gültige E-Mail ein',login_err_denied:'❌ Diese E-Mail hat keinen Zugang.',login_err_network:'Fehler bei der Überprüfung.',login_checking:'Prüfen...'},
+  ja:{logout:'ログアウト',nav_films:'映画',nav_challenges:'チャレンジ',nav_questions:'質問',nav_ranking:'ランキング',nav_food:'料理',tagline:'完璧な夜のための<b>完璧なプラン</b>',login_sub:'メールアドレスを入力してアクセス',login_label:'メールアドレス',login_placeholder:'youremail@example.com',login_btn:'入る',login_err_invalid:'有効なメールアドレスを入力',login_err_denied:'❌ このメールはアクセスできません。',login_err_network:'確認エラー。',login_checking:'確認中...'}
 };
 
-function t(key){ return (LANGS[currentLang]||LANGS.en)[key] || (LANGS.en)[key] || key; }
+const CONTENT = {
+  genres:{pt:['Todos','Romance','Comédia','Terror','Suspense','Ação','Ficção','Musical','Animação'],en:['All','Romance','Comedy','Horror','Thriller','Action','Sci-Fi','Musical','Animation'],es:['Todos','Romance','Comedia','Terror','Suspenso','Acción','Ciencia ficción','Musical','Animación'],fr:['Tous','Romance','Comédie','Horreur','Thriller','Action','Science-fiction','Musical','Animation'],it:['Tutti','Romance','Commedia','Horror','Thriller','Azione','Fantascienza','Musical','Animazione'],de:['Alle','Romantik','Komödie','Horror','Thriller','Aktion','Science-Fiction','Musical','Animation'],ja:['すべて','ロマンス','コメディ','ホラー','スリラー','アクション','SF','ミュージカル','アニメ']},
+  all_label:{pt:'Todos',en:'All',es:'Todos',fr:'Tous',it:'Tutti',de:'Alle',ja:'すべて'},
+  rental:{pt:'Aluguel/Compra',en:'Rent/Buy',es:'Alquiler/Compra',fr:'Location/Achat',it:'Noleggio/Acquisto',de:'Leihen/Kaufen',ja:'レンタル/購入'},
+  platforms_all:{pt:'Todos os serviços',en:'All services',es:'Todos los servicios',fr:'Tous les services',it:'Tutti i servizi',de:'Alle Dienste',ja:'すべてのサービス'},
+  spin_film:{pt:'Sortear o filme da noite',en:'Spin movie of the night',es:'Sortear película',fr:'Tirer le film',it:'Estrai il film',de:'Film der Nacht ziehen',ja:'今夜の映画を抽選'},
+  film_ready:{pt:'Pronto para a estreia?',en:'Ready for the show?',es:'¿Listo para el estreno?',fr:'Prêt pour la séance?',it:'Pronto per lo spettacolo?',de:'Bereit für die Vorstellung?',ja:'上映の準備はいい?'},
+  film_where:{pt:'Onde assistir: ',en:'Where to watch: ',es:'Dónde ver: ',fr:'Où regarder: ',it:'Dove guardare: ',de:'Wo schauen: ',ja:'視聴場所: '},
+  film_add:{pt:'Adicionar filme à cartela',en:'Add a movie to the list',es:'Agregar película',fr:'Ajouter un film',it:'Aggiungi un film',de:'Film hinzufügen',ja:'映画を追加'},
+  film_add_btn:{pt:'Adicionar',en:'Add',es:'Agregar',fr:'Ajouter',it:'Aggiungi',de:'Hinzufügen',ja:'追加'},
+  film_none:{pt:'Nenhum filme combina com esse filtro.',en:'No movies match this filter.',es:'Ninguna película coincide.',fr:'Aucun film ne correspond.',it:'Nessun film corrisponde.',de:'Kein Film entspricht.',ja:'該当映画なし。'},
+  film_count:{pt:' filmes combinam com o filtro',en:' movies match the filter',es:' películas coinciden',fr:' films correspondent',it:' film corrispondono',de:' Filme entsprechen',ja:'本がフィルターに合致'},
+  film_yours:{pt:'Seus filmes',en:'Your movies',es:'Tus películas',fr:'Vos films',it:'I tuoi film',de:'Deine Filme',ja:'あなたの映画'},
+  film_yours_platform:{pt:'Da sua lista',en:'From your list',es:'De tu lista',fr:'De votre liste',it:'Dalla tua lista',de:'Von deiner Liste',ja:'あなたのリストから'},
+  film_toast_added:{pt:'Filme adicionado à cartela',en:'Movie added to the list',es:'Película agregada',fr:'Film ajouté',it:'Film aggiunto',de:'Film hinzugefügt',ja:'映画を追加しました'},
+  film_toast_none:{pt:'Nenhum filme nesse filtro',en:'No movies in this filter',es:'Sin películas en este filtro',fr:'Aucun film dans ce filtre',it:'Nessun film in questo filtro',de:'Kein Film in diesem Filter',ja:'このフィルターに映画がありません'},
+  film_list:{pt:'Lista do filtro',en:'Filter list',es:'Lista del filtro',fr:'Liste du filtre',it:'Lista del filtro',de:'Filterliste',ja:'フィルターリスト'},
+  challenge_front:{pt:'Desafio',en:'Challenge',es:'Desafío',fr:'Défi',it:'Sfida',de:'Challenge',ja:'チャレンジ'},
+  challenge_hint:{pt:'Toque para virar',en:'Tap to flip',es:'Toca para voltear',fr:'Appuyez pour retourner',it:'Tocca per girare',de:'Tippen zum Umdrehen',ja:'タップして裏返す'},
+  challenge_draw:{pt:'Sortear novo desafio',en:'Draw new challenge',es:'Nuevo desafío',fr:'Nouveau défi',it:'Nuova sfida',de:'Neue Challenge',ja:'新しいチャレンジ'},
+  challenge_card:{pt:'Carta',en:'Card',es:'Carta',fr:'Carte',it:'Carta',de:'Karte',ja:'カード'},
+  q_next:{pt:'Próxima pergunta',en:'Next question',es:'Siguiente pregunta',fr:'Question suivante',it:'Prossima domanda',de:'Nächste Frage',ja:'次の質問'},
+  q_placeholder:{pt:'Escolha uma categoria acima e toque em "Próxima pergunta".',en:'Choose a category above and tap "Next question".',es:'Elige una categoría y toca "Siguiente pregunta".',fr:'Choisissez une catégorie et appuyez sur "Question suivante".',it:'Scegli una categoria e tocca "Prossima domanda".',de:'Wähle eine Kategorie und tippe auf "Nächste Frage".',ja:'カテゴリを選んで「次の質問」をタップ。'},
+  q_cats:{
+    pt:{divertidas:{l:'Divertidas',s:'Leves & soltas'},profundas:{l:'Profundas',s:'De coração'},memorias:{l:'Memórias',s:'Nosso começo'},romance:{l:'Romance',s:'Só nós dois'}},
+    en:{divertidas:{l:'Fun',s:'Light & easy'},profundas:{l:'Deep',s:'From the heart'},memorias:{l:'Memories',s:'Our beginning'},romance:{l:'Romance',s:'Just the two of us'}},
+    es:{divertidas:{l:'Divertidas',s:'Ligeras y sueltas'},profundas:{l:'Profundas',s:'De corazón'},memorias:{l:'Memorias',s:'Nuestro comienzo'},romance:{l:'Romance',s:'Solo nosotros dos'}},
+    fr:{divertidas:{l:'Amusantes',s:'Légères & fun'},profundas:{l:'Profondes',s:'Du cœur'},memorias:{l:'Souvenirs',s:'Nos débuts'},romance:{l:'Romance',s:'Juste nous deux'}},
+    it:{divertidas:{l:'Divertenti',s:'Leggere & spensierate'},profundas:{l:'Profonde',s:'Dal cuore'},memorias:{l:'Ricordi',s:'Il nostro inizio'},romance:{l:'Romantico',s:'Solo noi due'}},
+    de:{divertidas:{l:'Lustig',s:'Leicht & locker'},profundas:{l:'Tiefgründig',s:'Von Herzen'},memorias:{l:'Erinnerungen',s:'Unser Anfang'},romance:{l:'Romantik',s:'Nur wir zwei'}},
+    ja:{divertidas:{l:'楽しい',s:'軽くて気楽'},profundas:{l:'深い',s:'心から'},memorias:{l:'思い出',s:'はじまりの頃'},romance:{l:'ロマンス',s:'二人だけで'}}
+  },
+  questions:{
+    pt:{divertidas:['Se nossa vida virasse um filme, qual seria o título?','Qual personagem de filme mais combina comigo?','Pipoca doce ou salgada — e isso é motivo de briga?','Se pudéssemos entrar em qualquer cenário de filme agora, qual seria?','Qual seria a música de abertura se a gente fosse uma série?','Qual filme você fingiu que gostou só porque eu amava?'],profundas:['O que te faz se sentir mais amado(a) por mim?','Qual momento nosso você reviveria se pudesse?','Como você imagina a gente daqui a dez anos?','O que você mais admira em quem você está se tornando?','Qual medo você gostaria de superar comigo ao lado?','O que eu faço que te dá uma sensação de lar?'],memorias:['Qual foi o momento exato em que você soube que gostava de mim?','Qual passeio ou viagem nosso ficou marcado pra você?','Qual a primeira coisa que você notou em mim?','Qual foi a melhor risada que demos juntos?','Que detalhe pequeno do nosso início você ainda lembra?','Qual presente meu ou seu significou mais do que parecia?'],romance:['Qual foi o nosso beijo mais memorável?','Qual gesto meu mais te conquista?','Qual encontro nosso você repetiria hoje à noite?','O que você acha irresistível em mim e nunca disse em voz alta?','Qual seria o cenário perfeito para o nosso próximo date?','Descreva uma noite perfeita a dois em três palavras.']},
+    en:{divertidas:['If our life were a movie, what would the title be?','Which movie character is most like me?','Sweet or salty popcorn — worth a fight?','If we could step into any movie scene right now, which would it be?','What would the opening song be if we were a TV series?','Which movie did you pretend to like just because I loved it?'],profundas:['What makes you feel most loved by me?','Which moment of ours would you relive if you could?','How do you picture us ten years from now?','What do you admire most about who you are becoming?','What fear would you like to overcome with me by your side?','What do I do that gives you a sense of home?'],memorias:['What was the exact moment you knew you liked me?','Which trip or outing of ours stayed with you the most?','What was the first thing you noticed about me?','What was the best laugh we shared together?','What small detail from our beginning do you still remember?','Which gift meant more than it seemed?'],romance:['What was our most memorable kiss?','What gesture of mine wins you over the most?','Which date of ours would you repeat tonight?','What do you find irresistible about me that you have never said out loud?','What would be the perfect setting for our next date?','Describe a perfect night for two in three words.']},
+    es:{divertidas:['Si nuestra vida fuera una película, cuál sería el título?','Qué personaje de película se parece más a mí?','Palomitas dulces o saladas, es motivo de pelea?','Si pudiéramos entrar en cualquier escena de película ahora, cuál sería?','Cuál sería la canción de apertura si fuéramos una serie?','Qué película fingiste que te gustaba solo porque yo la amaba?'],profundas:['Qué te hace sentir más amado por mí?','Qué momento nuestro revivirías si pudieras?','Cómo nos imaginas de aquí a diez años?','Qué admiras más en quién estás convirtiéndote?','Qué miedo te gustaría superar conmigo a tu lado?','Qué hago yo que te da sensación de hogar?'],memorias:['Cuál fue el momento exacto en que supiste que te gustaba?','Qué paseo o viaje nuestro más te marcó?','Qué fue lo primero que notaste en mí?','Cuál fue la mejor carcajada que tuvimos juntos?','Qué pequeño detalle de nuestro comienzo aún recuerdas?','Qué regalo significó más de lo que parecía?'],romance:['Cuál fue nuestro beso más memorable?','Qué gesto mío más te conquista?','Qué encuentro nuestro repetirías esta noche?','Qué encuentras irresistible en mí y nunca lo has dicho en voz alta?','Cuál sería el escenario perfecto para nuestra próxima cita?','Describe una noche perfecta para dos en tres palabras.']},
+    fr:{divertidas:['Si notre vie était un film, quel serait le titre?','Quel personnage de film me ressemble le plus?','Popcorn sucré ou salé, raison de se disputer?','Si on pouvait entrer dans une scène de film maintenant, laquelle?','Quelle serait la chanson si on était une série?','Quel film as-tu fait semblant d\'aimer parce que je l\'aimais?'],profundas:['Qu\'est-ce qui te fait te sentir le plus aimé par moi?','Quel moment à nous revivrais-tu?','Comment nous imagines-tu dans dix ans?','Qu\'admires-tu en qui tu deviens?','Quelle peur voudrais-tu surmonter avec moi?','Que fais-je qui te donne un sentiment de maison?'],memorias:['Quel a été le moment où tu as su que tu m\'aimais?','Quelle sortie à nous t\'a le plus marqué?','Quelle a été la première chose que tu as remarquée chez moi?','Quel a été le meilleur fou rire partagé?','Quel petit détail de nos débuts te revient encore?','Quel cadeau a signifié plus qu\'il n\'y paraissait?'],romance:['Quel a été notre baiser le plus mémorable?','Quel geste de ma part te conquiert le plus?','Quel rendez-vous répéterais-tu ce soir?','Qu\'est-ce que tu trouves irrésistible chez moi sans jamais le dire?','Quel serait le cadre parfait pour notre prochain rendez-vous?','Décris une nuit parfaite à deux en trois mots.']},
+    it:{divertidas:['Se la nostra vita fosse un film, qual sarebbe il titolo?','Quale personaggio di film mi somiglia di più?','Popcorn dolce o salato, motivo di litigio?','Se potessimo entrare in qualsiasi scena di un film ora, quale?','Qual sarebbe la canzone di apertura se fossimo una serie?','Quale film hai finto di amare perché io lo adoravo?'],profundas:['Cosa ti fa sentire più amato da me?','Quale momento nostro rivivresti se potessi?','Come ci immagini tra dieci anni?','Cosa ammiri di più in chi stai diventando?','Quale paura vorresti superare con me al tuo fianco?','Cosa faccio io che ti dà una sensazione di casa?'],memorias:['Qual è stato il momento in cui hai capito che ti piacevo?','Quale gita o viaggio nostro ti è rimasto più impresso?','Qual è stata la prima cosa che hai notato di me?','Qual è stata la migliore risata condivisa?','Quale piccolo dettaglio del nostro inizio ricordi ancora?','Quale regalo ha significato più di quanto sembrasse?'],romance:['Qual è stato il nostro bacio più memorabile?','Quale gesto mio ti conquista di più?','Quale appuntamento nostro ripeteresti stasera?','Cosa trovi irresistibile in me che non hai mai detto ad alta voce?','Quale sarebbe lo scenario perfetto per il nostro prossimo appuntamento?','Descrivi una notte perfetta per due in tre parole.']},
+    de:{divertidas:['Wenn unser Leben ein Film wäre, wie würde er heißen?','Welche Filmfigur ähnelt mir am meisten?','Süßes oder salziges Popcorn, einen Streit wert?','Wenn wir in eine beliebige Filmszene eintreten könnten, welche?','Was wäre der Titelsong, wenn wir eine Serie wären?','Welchen Film hast du so getan als ob du magst, weil ich ihn liebte?'],profundas:['Was lässt dich am meisten von mir geliebt fühlen?','Welchen Moment von uns würdest du wiedererleben?','Wie stellst du uns in zehn Jahren vor?','Was bewunderst du an wer du wirst?','Welche Angst würdest du mit mir überwinden?','Was tue ich, das dir ein Gefühl von Zuhause gibt?'],memorias:['Was war der Moment, in dem du wusstest, dass du mich magst?','Welcher Ausflug hat dich am meisten geprägt?','Was war das Erste, das du an mir bemerkt hast?','Was war das beste gemeinsame Lachen?','An welches Detail unserer Anfänge erinnerst du dich noch?','Welches Geschenk hat mehr bedeutet als es schien?'],romance:['Was war unser denkwürdigster Kuss?','Welche Geste von mir erobert dich am meisten?','Welches Date würdest du heute Abend wiederholen?','Was findest du an mir unwiderstehlich und hast es nie laut gesagt?','Was wäre der perfekte Rahmen für unser nächstes Date?','Beschreibe eine perfekte Nacht zu zweit in drei Worten.']},
+    ja:{divertidas:['もし私たちの人生が映画だったら、タイトルは何?','私に一番似ている映画キャラは誰?','甘いポップコーンか塩味か、喧嘩の理由になる?','今すぐ映画のどんなシーンにも入れたら、どのシーンにする?','もし私たちがドラマだったら、オープニング曲は何?','私が好きだからというだけで好きなふりをした映画は?'],profundas:['私に一番愛されていると感じるのはどんな時?','もし再体験できるなら、どの瞬間を選ぶ?','10年後の私たちをどう想像する?','あなたが今なりつつある自分のどこを一番尊敬してる?','私が隣にいれば乗り越えたい恐れは何?','私がすることでどんなホーム感を感じる?'],memorias:['私のことが好きだと気づいた瞬間はいつ?','一番心に残った二人の旅や外出は?','最初に私のどこに気づいた?','一緒に笑った最高の瞬間は?','二人のはじまりの小さな詳細を今でも覚えてる?','予想以上に意味があった贈り物は?'],romance:['一番印象的なキスはいつ?','私のどんなジェスチャーが一番心を掴む?','もう一度繰り返したいデートはどれ?','声に出して言ったことのない私のどこが抗えない?','次のデートの完璧なシーンは?','二人で過ごす完璧な夜を3語で描写して。']}
+    }
+  ,
+  challenges:{
+    pt:['Faça uma massagem de 5 minutos no seu par antes do filme começar.','Recriem o primeiro encontro de vocês em apenas três frases.','Escolha uma música e dedique ao seu par, explicando o porquê.','Beijo de cinema: recriem a cena de beijo mais famosa que conseguirem lembrar.','Façam a pipoca juntos sem falar nenhuma palavra — só gestos.','Diga três coisas que você ama no seu par antes dos créditos iniciais.','Troquem de lugar no sofá e imitem o jeito do outro de assistir a filmes.','Escrevam um bilhete secreto um para o outro e só leiam no fim do filme.','Descreva o último sonho bom que você teve com o seu par.','Inventem juntos um final alternativo para o filme de hoje.','Olhem nos olhos um do outro por 30 segundos — sem rir, se conseguirem.','Conte uma lembrança de vocês dois que você nunca esquece.','Faça uma declaração de amor no estilo do gênero do filme de hoje.','Vendem os olhos do seu par e ofereçam três petiscos para adivinhar.','Dancem uma música lenta na sala, mesmo que de um jeito desajeitado.','Digam, ao mesmo tempo, o filme favorito do outro. Acertou? Marca um ponto.','Tirem uma selfie estilo cartaz de cinema recriando um pôster famoso.','Prometa uma pequena surpresa para a próxima sessão de cinema.'],
+    en:['Give your partner a 5-minute massage before the movie starts.','Re-enact your first meeting in just three sentences.','Choose a song and dedicate it to your partner, explaining why.','Cinema kiss: re-enact the most famous kiss scene you can remember.','Make the popcorn together without saying a word, only gestures.','Say three things you love about your partner before the opening credits.','Switch seats on the couch and imitate how the other watches movies.','Write a secret note to each other and only read it at the end of the movie.','Describe the last good dream you had about your partner.','Invent an alternative ending to tonight movie together.','Look into each other eyes for 30 seconds, without laughing if you can.','Share a memory of the two of you that you never forget.','Make a love declaration in the style of tonight movie genre.','Blindfold your partner and offer three snacks to guess.','Dance to a slow song in the living room, even if it is a little awkward.','Say at the same time the other favorite movie. Got it right? Score a point.','Take a selfie in movie poster style recreating a famous poster.','Promise a small surprise for the next movie night.'],
+    es:['Dale un masaje de 5 minutos a tu pareja antes de que empiece la película.','Recreen su primer encuentro en solo tres frases.','Elige una canción y dedícasela a tu pareja, explicando por qué.','Beso de cine: recreen la escena de beso más famosa que recuerden.','Hagan las palomitas juntos sin decir una palabra, solo gestos.','Di tres cosas que amas de tu pareja antes de los créditos iniciales.','Cambien de lugar en el sofá e imiten cómo el otro ve películas.','Escriban una nota secreta el uno para el otro y solo léanla al final.','Describe el último buen sueño que tuviste con tu pareja.','Inventen juntos un final alternativo para la película de hoy.','Míraos a los ojos durante 30 segundos, sin reír si pueden.','Comparte un recuerdo de los dos que nunca olvidarás.','Haz una declaración de amor al estilo del género de la película de hoy.','Vendan los ojos a tu pareja y ofrécele tres aperitivos para adivinar.','Bailen una canción lenta en la sala, aunque sea un poco torpe.','Digan al mismo tiempo la película favorita del otro. Acertaste? Suma un punto.','Tómense una selfie estilo cartel de cine recreando un póster famoso.','Promete una pequeña sorpresa para la próxima sesión de cine.'],
+    fr:['Faites un massage de 5 minutes à votre partenaire avant que le film commence.','Recréez votre première rencontre en seulement trois phrases.','Choisissez une chanson et dédiez-la à votre partenaire en expliquant pourquoi.','Baiser de cinéma: recréez la scène de baiser la plus célèbre dont vous vous souvenez.','Faites le popcorn ensemble sans dire un mot, seulement des gestes.','Dites trois choses que vous aimez chez votre partenaire avant le générique.','Échangez de place sur le canapé et imitez la façon dont l\'autre regarde les films.','Écrivez un billet secret l\'un pour l\'autre et ne le lisez qu\'à la fin du film.','Décrivez le dernier bon rêve que vous avez eu avec votre partenaire.','Inventez ensemble une fin alternative pour le film aujourd\'hui.','Regardez-vous dans les yeux pendant 30 secondes, sans rire si vous pouvez.','Partagez un souvenir à deux que vous n\'oublierez jamais.','Faites une déclaration d\'amour dans le style du genre du film aujourd\'hui.','Bandez les yeux de votre partenaire et proposez trois snacks à deviner.','Dansez sur une chanson lente dans le salon, même maladroitement.','Dites en même temps le film préféré de l\'autre. Bonne réponse? Marquez un point.','Prenez un selfie style affiche de cinéma en recréant une affiche célèbre.','Promettez une petite surprise pour la prochaine soirée cinéma.'],
+    it:['Fai un massaggio di 5 minuti al tuo partner prima che inizi il film.','Ricreare il vostro primo incontro in solo tre frasi.','Scegli una canzone e dedicala al tuo partner, spiegando perché.','Bacio da cinema: ricreare la scena di bacio più famosa che riuscite a ricordare.','Fate i popcorn insieme senza dire una parola, solo gesti.','Dì tre cose che ami del tuo partner prima dei titoli iniziali.','Cambiate posto sul divano e imitate come l\'altro guarda i film.','Scrivete un biglietto segreto l\'uno per l\'altro e leggete solo alla fine.','Descrivi l\'ultimo bel sogno che hai avuto con il tuo partner.','Inventate insieme un finale alternativo per il film di stasera.','Guardatevi negli occhi per 30 secondi, senza ridere se potete.','Condividi un ricordo di voi due che non dimentichi mai.','Fai una dichiarazione d\'amore nello stile del genere del film di stasera.','Benda gli occhi al tuo partner e offrigli tre snack da indovinare.','Ballate una canzone lenta in salotto, anche in modo goffo.','Dite allo stesso tempo il film preferito dell\'altro. Indovinato? Segna un punto.','Fate un selfie stile locandina ricreando un poster famoso.','Prometti una piccola sorpresa per la prossima serata cinema.'],
+    de:['Gib deinem Partner eine 5-minütige Massage, bevor der Film beginnt.','Spielt euer erstes Treffen in nur drei Sätzen nach.','Wähle ein Lied und widme es deinem Partner, erkläre warum.','Kinokuss: Spielt die berühmteste Kussszene nach, die ihr euch vorstellen könnt.','Macht das Popcorn zusammen, ohne ein Wort zu sagen, nur Gesten.','Sag drei Dinge, die du an deinem Partner liebst, bevor der Vorspann beginnt.','Tauscht auf dem Sofa die Plätze und ahmt nach, wie der andere Filme schaut.','Schreibt einander einen geheimen Zettel und lest ihn erst am Ende des Films.','Beschreibe den letzten guten Traum, den du mit deinem Partner hattest.','Erfindet gemeinsam ein alternatives Ende für den heutigen Film.','Schaut euch 30 Sekunden in die Augen, ohne zu lachen wenn ihr könnt.','Teile eine Erinnerung zu zweit, die du nie vergisst.','Mach eine Liebeserklärung im Stil des heutigen Filmgenres.','Verbinde deinem Partner die Augen und biete drei Snacks zum Erraten an.','Tanzt zu einem langsamen Lied im Wohnzimmer, auch wenn es etwas ungeschickt ist.','Sagt gleichzeitig den Lieblingsfilm des anderen. Richtig? Einen Punkt!','Macht ein Selfie im Filmplakat-Stil und recreiert ein berühmtes Poster.','Versprich eine kleine Überraschung für den nächsten Filmabend.'],
+    ja:['映画が始まる前にパートナーに5分間のマッサージをしてあげよう。','3文だけで初めて会った時を再現しよう。','曲を選んでパートナーに捧げよう、理由も添えて。','シネマキス: 思い出せる一番有名なキスシーンを再現しよう。','一言も話さずに一緒にポップコーンを作ろう、ジェスチャーだけで。','冒頭クレジットの前にパートナーのことが好きな3つのことを言おう。','ソファで席を交換してお互いの映画の見方を真似しよう。','秘密のメモをお互いに書いて映画の最後まで読まないでおこう。','パートナーと一緒に見た最後の良い夢を描写しよう。','今日の映画のオルタナティブエンディングを一緒に考えよう。','30秒間お互いの目を見つめよう、できれば笑わずに。','忘れられない二人の思い出を分かち合おう。','今日の映画のジャンルスタイルで愛の告白をしよう。','パートナーの目を隠して3つのスナックを当ててもらおう。','部屋でスローダンスしよう、少し不格好でも。','同時に相手の好きな映画を言ってみよう。正解したらポイント！','有名なポスターを再現して映画ポスター風セルフィーを撮ろう。','次の映画ナイトのために小さなサプライズを約束しよう。']
+  },
+  food_modes:{
+    pt:{todos:'🎲 Tudo',romantico:'🍝 Romântico',descontraido:'🍔 Descontraído',sofisticado:'🍣 Chiquezinho',internacional:'🌮 Internacional',doce:'🍰 Doce Final'},
+    en:{todos:'🎲 All',romantico:'🍝 Romantic',descontraido:'🍔 Casual',sofisticado:'🍣 Fancy',internacional:'🌮 International',doce:'🍰 Sweet Ending'},
+    es:{todos:'🎲 Todo',romantico:'🍝 Romántico',descontraido:'🍔 Casual',sofisticado:'🍣 Elegante',internacional:'🌮 Internacional',doce:'🍰 Postre Final'},
+    fr:{todos:'🎲 Tout',romantico:'🍝 Romantique',descontraido:'🍔 Décontracté',sofisticado:'🍣 Chic',internacional:'🌮 International',doce:'🍰 Dessert Final'},
+    it:{todos:'🎲 Tutto',romantico:'🍝 Romantico',descontraido:'🍔 Casual',sofisticado:'🍣 Elegante',internacional:'🌮 Internazionale',doce:'🍰 Dolce Finale'},
+    de:{todos:'🎲 Alles',romantico:'🍝 Romantisch',descontraido:'🍔 Entspannt',sofisticado:'🍣 Edel',internacional:'🌮 International',doce:'🍰 Süßes Finale'},
+    ja:{todos:'🎲 すべて',romantico:'🍝 ロマンチック',descontraido:'🍔 カジュアル',sofisticado:'🍣 おしゃれ',internacional:'🌮 インターナショナル',doce:'🍰 スイートエンディング'}
+  },
+  food_subs:{
+    pt:{todos:'Sorteio livre',romantico:'Clássicos',descontraido:'Comfort food',sofisticado:'Vibe gourmet',internacional:'Pelo mundo',doce:'Sobremesas'},
+    en:{todos:'Free spin',romantico:'Classics',descontraido:'Comfort food',sofisticado:'Gourmet vibes',internacional:'Around the world',doce:'Desserts'},
+    es:{todos:'Sorteo libre',romantico:'Clásicos',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Por el mundo',doce:'Postres'},
+    fr:{todos:'Tirage libre',romantico:'Classiques',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Tour du monde',doce:'Desserts'},
+    it:{todos:'Sorteggio libero',romantico:'Classici',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Giro del mondo',doce:'Dessert'},
+    de:{todos:'Freie Ziehung',romantico:'Klassiker',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Weltreise',doce:'Desserts'},
+    ja:{todos:'フリー抽選',romantico:'クラシック',descontraido:'コンフォートフード',sofisticado:'グルメ',internacional:'世界旅行',doce:'デザート'}
+  },
+  food_spin:{pt:'Sortear o pedido da noite',en:'Spin the food order',es:'Sortear el pedido',fr:'Tirer la commande',it:'Estrai l\'ordine',de:'Bestellung auslosen',ja:'注文を抽選'},
+  food_suggest:{pt:'Sugerir uma comida à cartela',en:'Suggest a food to the board',es:'Sugerir una comida',fr:'Suggérer un plat',it:'Suggerisci un cibo',de:'Essen vorschlagen',ja:'料理を提案'},
+  food_add:{pt:'Adicionar',en:'Add',es:'Agregar',fr:'Ajouter',it:'Aggiungi',de:'Hinzufügen',ja:'追加'},
+  food_toast:{pt:'Pedido escolhido! Bom apetite 💕',en:'Order chosen! Enjoy your meal 💕',es:'Pedido elegido! Buen provecho 💕',fr:'Commande choisie! Bon appétit 💕',it:'Ordine scelto! Buon appetito 💕',de:'Bestellung gewählt! Guten Appetit 💕',ja:'注文決定！いただきます 💕'},
+  food_toast_added:{pt:'Comida adicionada à cartela 🍴',en:'Food added to the board 🍴',es:'Comida agregada 🍴',fr:'Plat ajouté 🍴',it:'Cibo aggiunto 🍴',de:'Essen hinzugefügt 🍴',ja:'料理を追加しました 🍴'},
+  food_toast_none:{pt:'Sem opções neste modo!',en:'No options in this mode!',es:'Sin opciones en este modo!',fr:'Pas d\'options dans ce mode!',it:'Nessuna opzione in questa modalità!',de:'Keine Optionen in diesem Modus!',ja:'このモードにはオプションがありません！'},
+  food_custom:{pt:'✨ Sugestão do casal',en:'✨ Couple suggestion',es:'✨ Sugerencia de la pareja',fr:'✨ Suggestion du couple',it:'✨ Suggerimento della coppia',de:'✨ Paar-Vorschlag',ja:'✨ カップル提案'},
+  ranking_reset_confirm:{pt:'Zerar pontos e contagem de noites? Os nomes serão mantidos.',en:'Reset points and movie night count? Names will be kept.',es:'Reiniciar puntos y noches? Los nombres se mantendrán.',fr:'Réinitialiser les points et les soirées? Les noms seront conservés.',it:'Azzerare i punti e le serate? I nomi verranno mantenuti.',de:'Punkte und Filmabende zurücksetzen? Namen bleiben erhalten.',ja:'ポイントと映画の夜をリセット？名前は保持されます。'},
+  ranking_reset_toast:{pt:'Ranking zerado',en:'Ranking reset',es:'Ranking reiniciado',fr:'Classement réinitialisé',it:'Classifica azzerata',de:'Rangliste zurückgesetzt',ja:'ランキングリセット'},
+  ranking_reset_btn:{pt:'Zerar ranking',en:'Reset ranking',es:'Reiniciar ranking',fr:'Réinitialiser',it:'Azzera classifica',de:'Rangliste zurücksetzen',ja:'リセット'},
+  ranking_nights_toast:{pt:'Mais uma noite de cinema!',en:'One more movie night!',es:'Una noche de cine más!',fr:'Encore une soirée cinéma!',it:'Ancora una serata cinema!',de:'Noch ein Filmabend!',ja:'また映画の夜！'},
+  ranking_nights_label:{pt:'Noites de cinema',en:'Movie nights',es:'Noches de cine',fr:'Soirées cinéma',it:'Serate cinema',de:'Filmabende',ja:'映画の夜'},
+  ranking_nights_sub:{pt:'O placar da relação',en:'The relationship scoreboard',es:'El marcador de la relación',fr:'Le tableau de la relation',it:'Il tabellone della relazione',de:'Das Beziehungs-Scoreboard',ja:'関係のスコアボード'},
+  p1:{pt:'Jogador 1',en:'Player 1',es:'Jugador 1',fr:'Joueur 1',it:'Giocatore 1',de:'Spieler 1',ja:'プレイヤー1'},
+  p2:{pt:'Jogador 2',en:'Player 2',es:'Jugador 2',fr:'Joueur 2',it:'Giocatore 2',de:'Spieler 2',ja:'プレイヤー2'}
+};
 
-function applyLang(){
-  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
-  const tg = document.querySelector('.df-tagline'); if(tg) tg.innerHTML = t('tagline');
-  const lsub = document.querySelector('.login-sub'); if(lsub) lsub.textContent = t('login_sub');
-  const llabel = document.querySelector('#login-screen .login-label'); if(llabel) llabel.textContent = t('login_label');
-  const linput = document.getElementById('login-email'); if(linput) linput.placeholder = t('login_placeholder');
-  const langLabel = document.getElementById('langLabel'); if(langLabel) langLabel.textContent = currentLang.toUpperCase();
-  document.querySelectorAll('.lang-opt').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
+function cl(){ return currentLang; }
+function ct(obj){ return obj[cl()] || obj['en'] || ''; }
+
+// 3. Apply all translations
+function applyAllLang(){
+  const lang = cl();
+  // Interface labels (data-i18n)
+  const tr = TR[lang] || TR.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if(tr[k]) el.innerHTML = tr[k];
+  });
+  // Tagline
+  const tg = document.querySelector('.df-tagline');
+  if(tg) tg.innerHTML = tr.tagline||'';
+  // Login
+  const lsub = document.querySelector('.login-sub'); if(lsub) lsub.textContent = tr.login_sub||'';
+  const llabel = document.querySelector('#login-screen .login-label'); if(llabel) llabel.textContent = tr.login_label||'';
+  const linput = document.getElementById('login-email'); if(linput) linput.placeholder = tr.login_placeholder||'';
+  // Lang button label
+  const ll = document.getElementById('langLabel'); if(ll) ll.textContent = lang.toUpperCase();
+  // Active lang option
+  document.querySelectorAll('.lang-opt').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+
+  // Genre pills
+  const genres = CONTENT.genres[lang] || CONTENT.genres.en;
+  const pills = document.querySelectorAll('#catPills .fpill');
+  pills.forEach((pill, i) => { if(genres[i]) pill.textContent = genres[i]; });
+
+  // Stream select first option
+  const sel = document.getElementById('streamFilter');
+  if(sel && sel.options[0]) sel.options[0].textContent = ct(CONTENT.platforms_all);
+  if(sel) Array.from(sel.options).forEach(o => { if(o.value==='Aluguel/Compra') o.textContent = ct(CONTENT.rental); });
+
+  // Film spin button
+  const sb = document.getElementById('spinBtn');
+  if(sb){ const svg=sb.querySelector('svg'); sb.innerHTML=''; if(svg)sb.appendChild(svg); sb.append(' '+ct(CONTENT.spin_film)); }
+
+  // Film add
+  const mi = document.getElementById('movieInput'); if(mi) mi.placeholder = ct(CONTENT.film_add);
+  const ma = document.getElementById('addMovie'); if(ma) ma.textContent = ct(CONTENT.film_add_btn);
+
+  // Challenge card
+  const fl = document.querySelector('.face.front .label'); if(fl) fl.textContent = ct(CONTENT.challenge_front);
+  const fh = document.querySelector('.face.front .hint'); if(fh) fh.textContent = ct(CONTENT.challenge_hint);
+  const dc = document.getElementById('drawChallenge');
+  if(dc){ const svg=dc.querySelector('svg'); dc.innerHTML=''; if(svg)dc.appendChild(svg); dc.append(' '+ct(CONTENT.challenge_draw)); }
+
+  // Questions
+  const nq = document.getElementById('nextQ');
+  if(nq){ const svg=nq.querySelector('svg'); nq.innerHTML=''; if(svg)nq.appendChild(svg); nq.append(' '+ct(CONTENT.q_next)); }
+  const qel = document.getElementById('question');
+  if(qel && (qel.classList.contains('ph')||qel.textContent.trim()==='')) qel.textContent = ct(CONTENT.q_placeholder);
+
+  // Q cats
+  const catKeys = ['divertidas','profundas','memorias','romance'];
+  const qcats = CONTENT.q_cats[lang] || CONTENT.q_cats.en;
+  document.querySelectorAll('.cat').forEach((el,i) => {
+    const k = catKeys[i]; if(qcats[k]) el.innerHTML = qcats[k].l+'<span>'+qcats[k].s+'</span>';
+  });
+
+  // Food modes
+  const fmodes = CONTENT.food_modes[lang] || CONTENT.food_modes.en;
+  const fsubs = CONTENT.food_subs[lang] || CONTENT.food_subs.en;
+  const fmodeKeys = ['todos','romantico','descontraido','sofisticado','internacional','doce'];
+  const fmodeEmojis = ['🎲','🍝','🍔','🍣','🌮','🍰'];
+  document.querySelectorAll('.food-mode').forEach((btn,i) => {
+    const k = fmodeKeys[i];
+    if(fmodes[k]){
+      btn.innerHTML = '<span class="fmicon">'+fmodeEmojis[i]+'</span>'+
+        (fmodes[k].replace(/^[^\s]+\s/,''))+'<span>'+(fsubs[k]||'')+'</span>';
+    }
+  });
+
+  // Food spin btn
+  const fsb = document.getElementById('foodSpinBtn');
+  if(fsb){ const svg=fsb.querySelector('svg'); fsb.innerHTML=''; if(svg)fsb.appendChild(svg); fsb.append(' '+ct(CONTENT.food_spin)); }
+  const fi = document.getElementById('foodInput'); if(fi) fi.placeholder = ct(CONTENT.food_suggest);
+  const fa = document.getElementById('addFood'); if(fa) fa.textContent = ct(CONTENT.food_add);
+
+  // Ranking
+  const rr = document.getElementById('resetRanking'); if(rr) rr.textContent = ct(CONTENT.ranking_reset_btn);
+  const nl = document.querySelector('.nights .lab');
+  if(nl) nl.innerHTML = ct(CONTENT.ranking_nights_label)+'<span>'+ct(CONTENT.ranking_nights_sub)+'</span>';
+  const n0 = document.getElementById('name0'); if(n0&&!n0.value) n0.placeholder = ct(CONTENT.p1);
+  const n1 = document.getElementById('name1'); if(n1&&!n1.value) n1.placeholder = ct(CONTENT.p2);
+
+  updateCount();
+  renderList();
 }
 
-// Lang switcher
-const langBtn = document.getElementById('langBtn');
-const langMenu = document.getElementById('langMenu');
-if(langBtn) langBtn.addEventListener('click', e => { e.stopPropagation(); langMenu.classList.toggle('open'); });
-document.addEventListener('click', () => { if(langMenu) langMenu.classList.remove('open'); });
+// 4. Lang switcher
+document.getElementById('langBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('langMenu').classList.toggle('open');
+});
+document.addEventListener('click', () => document.getElementById('langMenu').classList.remove('open'));
 document.querySelectorAll('.lang-opt').forEach(btn => {
   btn.addEventListener('click', () => {
     currentLang = btn.dataset.lang;
     localStorage.setItem('dncp_lang', currentLang);
-    langMenu.classList.remove('open');
-    applyLang();
+    document.getElementById('langMenu').classList.remove('open');
+    applyAllLang();
   });
 });
 
-/* ── LOGOUT ── */
-const logoutBtn = document.getElementById('logoutBtn');
-if(logoutBtn) logoutBtn.addEventListener('click', () => {
-  if(confirm(t('logout') + '?')){
-    localStorage.removeItem('dncp_session');
-    document.getElementById('login-screen').classList.remove('hidden');
-    document.getElementById('login-email').value = '';
-    document.getElementById('email-error').textContent = '';
-  }
-});
-
-applyLang();
-
-/* ── MULTILINGUAL CONTENT ── */
-const CONTENT = {
-  pt: {
-    genres: ['Todos','Romance','Comédia','Terror','Suspense','Ação','Ficção','Musical','Animação'],
-    platforms_label: 'Todos os serviços',
-    rental_label: 'Aluguel/Compra',
-    film_genre_label: 'Gênero',
-    film_where_label: 'Onde assistir',
-    film_spin_btn: 'Sortear o filme da noite',
-    film_ready: 'Pronto para a estreia?',
-    film_where_prefix: 'Onde assistir: ',
-    film_count_none: 'Nenhum filme combina com esse filtro.',
-    film_count_one: ' filme combina com o filtro',
-    film_count_many: ' filmes combinam com o filtro',
-    film_add_placeholder: 'Adicionar filme à cartela',
-    film_add_btn: 'Adicionar',
-    film_list_label: 'Lista do filtro',
-    film_toast_added: 'Filme adicionado à cartela',
-    film_toast_none: 'Nenhum filme nesse filtro',
-    film_your: 'Seus filmes',
-    film_your_platform: 'Da sua lista',
-    challenge_front: 'Desafio',
-    challenge_hint: 'Toque para virar',
-    challenge_draw: 'Sortear novo desafio',
-    challenge_card: 'Carta',
-    q_next: 'Próxima pergunta',
-    q_placeholder: 'Escolha uma categoria acima e toque em "Próxima pergunta".',
-    q_cats: {
-      divertidas: {label:'Divertidas', sub:'Leves & soltas'},
-      profundas: {label:'Profundas', sub:'De coração'},
-      memorias: {label:'Memórias', sub:'Nosso começo'},
-      romance: {label:'Romance', sub:'Só nós dois'}
-    },
-    questions: {
-      divertidas: ['Se nossa vida virasse um filme, qual seria o título?','Qual personagem de filme mais combina comigo?','Pipoca doce ou salgada — e isso é motivo de briga?','Se pudéssemos entrar em qualquer cenário de filme agora, qual seria?','Qual seria a música de abertura se a gente fosse uma série?','Qual filme você fingiu que gostou só porque eu amava?'],
-      profundas: ['O que te faz se sentir mais amado(a) por mim?','Qual momento nosso você reviveria se pudesse?','Como você imagina a gente daqui a dez anos?','O que você mais admira em quem você está se tornando?','Qual medo você gostaria de superar comigo ao lado?','O que eu faço que te dá uma sensação de "lar"?'],
-      memorias: ['Qual foi o momento exato em que você soube que gostava de mim?','Qual passeio ou viagem nosso ficou marcado pra você?','Qual a primeira coisa que você notou em mim?','Qual foi a melhor risada que demos juntos?','Que detalhe pequeno do nosso início você ainda lembra?','Qual presente meu (ou seu) significou mais do que parecia?'],
-      romance: ['Qual foi o nosso beijo mais memorável?','Qual gesto meu mais te conquista?','Qual encontro nosso você repetiria hoje à noite?','O que você acha irresistível em mim e nunca disse em voz alta?','Qual seria o cenário perfeito para o nosso próximo date?','Descreva uma noite perfeita a dois em três palavras.']
-    },
-    challenges: ['Faça uma massagem de 5 minutos no seu par antes do filme começar.','Recriem o primeiro encontro de vocês em apenas três frases.','Escolha uma música e dedique ao seu par, explicando o porquê.','Beijo de cinema: recriem a cena de beijo mais famosa que conseguirem lembrar.','Façam a pipoca juntos sem falar nenhuma palavra — só gestos.','Diga três coisas que você ama no seu par antes dos créditos iniciais.','Troquem de lugar no sofá e imitem o jeito do outro de assistir a filmes.','Escrevam um bilhete secreto um para o outro e só leiam no fim do filme.','Descreva o último sonho bom que você teve com o seu par.','Inventem juntos um final alternativo para o filme de hoje.','Olhem nos olhos um do outro por 30 segundos — sem rir, se conseguirem.','Conte uma lembrança de vocês dois que você nunca esquece.','Faça uma declaração de amor no estilo do gênero do filme de hoje.','Vendem os olhos do seu par e ofereçam três petiscos para adivinhar.','Dancem uma música lenta na sala, mesmo que de um jeito desajeitado.','Digam, ao mesmo tempo, o filme favorito do outro. Acertou? Marca um ponto.','Tirem uma selfie estilo "cartaz de cinema" recriando um pôster famoso.','Prometa uma pequena surpresa para a próxima sessão de cinema.'],
-    food_modes: {todos:'Tudo',romantico:'Romântico',descontraido:'Descontraído',sofisticado:'Chiquezinho',internacional:'Internacional',doce:'Doce Final'},
-    food_subs: {todos:'Sorteio livre',romantico:'Clássicos',descontraido:'Comfort food',sofisticado:'Vibe gourmet',internacional:'Pelo mundo',doce:'Sobremesas'},
-    food_spin_btn: 'Sortear o pedido da noite',
-    food_suggest: 'Sugerir uma comida à cartela',
-    food_add: 'Adicionar',
-    food_toast: 'Pedido escolhido! Bom apetite 💕',
-    food_toast_added: 'Comida adicionada à cartela 🍴',
-    food_toast_none: 'Sem opções neste modo!',
-    food_custom_label: '✨ Sugestão do casal',
-    food_labels: {romantico:'Clássicos românticos',descontraido:'Comfort food',sofisticado:'Vibe sofisticada',internacional:'Internacional',doce:'Doce final'},
-    ranking_reset_confirm: 'Zerar pontos e contagem de noites? Os nomes serão mantidos.',
-    ranking_reset_toast: 'Ranking zerado',
-    ranking_nights_toast: 'Mais uma noite de cinema!',
-    player1_placeholder: 'Jogador 1',
-    player2_placeholder: 'Jogador 2',
-    ranking_nights_label: 'Noites de cinema',
-    ranking_nights_sub: 'O placar da relação',
-    ranking_reset_btn: 'Zerar ranking',
-  },
-  en: {
-    genres: ['All','Romance','Comedy','Horror','Thriller','Action','Sci-Fi','Musical','Animation'],
-    platforms_label: 'All services',
-    rental_label: 'Rent/Buy',
-    film_genre_label: 'Genre',
-    film_where_label: 'Where to watch',
-    film_spin_btn: 'Spin movie of the night',
-    film_ready: 'Ready for the show?',
-    film_where_prefix: 'Where to watch: ',
-    film_count_none: 'No movies match this filter.',
-    film_count_one: ' movie matches the filter',
-    film_count_many: ' movies match the filter',
-    film_add_placeholder: 'Add a movie to the list',
-    film_add_btn: 'Add',
-    film_list_label: 'Filter list',
-    film_toast_added: 'Movie added to the list',
-    film_toast_none: 'No movies in this filter',
-    film_your: 'Your movies',
-    film_your_platform: 'From your list',
-    challenge_front: 'Challenge',
-    challenge_hint: 'Tap to flip',
-    challenge_draw: 'Draw new challenge',
-    challenge_card: 'Card',
-    q_next: 'Next question',
-    q_placeholder: 'Choose a category above and tap "Next question".',
-    q_cats: {
-      divertidas: {label:'Fun', sub:'Light & easy'},
-      profundas: {label:'Deep', sub:'From the heart'},
-      memorias: {label:'Memories', sub:'Our beginning'},
-      romance: {label:'Romance', sub:'Just the two of us'}
-    },
-    questions: {
-      divertidas: ['If our life were a movie, what would the title be?','Which movie character is most like me?','Sweet or salty popcorn — is this worth fighting over?','If we could step into any movie scene right now, which would it be?','What would the opening song be if we were a TV series?','Which movie did you pretend to like just because I loved it?'],
-      profundas: ['What makes you feel most loved by me?','Which moment of ours would you relive if you could?','How do you picture us ten years from now?','What do you admire most about who you are becoming?','What fear would you like to overcome with me by your side?','What do I do that gives you a sense of "home"?'],
-      memorias: ['What was the exact moment you knew you liked me?','Which trip or outing of ours stayed with you the most?','What was the first thing you noticed about me?','What was the best laugh we shared together?','What small detail from our beginning do you still remember?','Which gift from me (or yours) meant more than it seemed?'],
-      romance: ['What was our most memorable kiss?','What gesture of mine wins you over the most?','Which date of ours would you repeat tonight?','What do you find irresistible about me that you\'ve never said out loud?','What would be the perfect setting for our next date?','Describe a perfect night for two in three words.']
-    },
-    challenges: ['Give your partner a 5-minute massage before the movie starts.','Re-enact your first meeting in just three sentences.','Choose a song and dedicate it to your partner, explaining why.','Cinema kiss: re-enact the most famous kiss scene you can remember.','Make the popcorn together without saying a word — only gestures.','Say three things you love about your partner before the opening credits.','Switch seats on the couch and imitate how the other watches movies.','Write a secret note to each other and only read it at the end of the movie.','Describe the last good dream you had about your partner.','Invent an alternative ending to tonight\'s movie together.','Look into each other\'s eyes for 30 seconds — without laughing, if you can.','Share a memory of the two of you that you never forget.','Make a love declaration in the style of tonight\'s movie genre.','Blindfold your partner and offer three snacks to guess.','Dance to a slow song in the living room, even if it\'s a little awkward.','Say at the same time the other\'s favorite movie. Got it right? Score a point.','Take a selfie in "movie poster" style recreating a famous poster.','Promise a small surprise for the next movie night.'],
-    food_modes: {todos:'All',romantico:'Romantic',descontraido:'Casual',sofisticado:'Fancy',internacional:'International',doce:'Sweet Ending'},
-    food_subs: {todos:'Free spin',romantico:'Classics',descontraido:'Comfort food',sofisticado:'Gourmet vibes',internacional:'Around the world',doce:'Desserts'},
-    food_spin_btn: 'Spin the food order',
-    food_suggest: 'Suggest a food to the board',
-    food_add: 'Add',
-    food_toast: 'Order chosen! Enjoy your meal 💕',
-    food_toast_added: 'Food added to the board 🍴',
-    food_toast_none: 'No options in this mode!',
-    food_custom_label: '✨ Couple suggestion',
-    food_labels: {romantico:'Romantic classics',descontraido:'Comfort food',sofisticado:'Sophisticated vibes',internacional:'International',doce:'Sweet ending'},
-    ranking_reset_confirm: 'Reset points and movie night count? Names will be kept.',
-    ranking_reset_toast: 'Ranking reset',
-    ranking_nights_toast: 'One more movie night!',
-    player1_placeholder: 'Player 1',
-    player2_placeholder: 'Player 2',
-    ranking_nights_label: 'Movie nights',
-    ranking_nights_sub: 'The relationship scoreboard',
-    ranking_reset_btn: 'Reset ranking',
-  },
-  es: {
-    genres: ['Todos','Romance','Comedia','Terror','Suspenso','Acción','Ciencia ficción','Musical','Animación'],
-    platforms_label: 'Todos los servicios',
-    rental_label: 'Alquiler/Compra',
-    film_genre_label: 'Género',
-    film_where_label: 'Dónde ver',
-    film_spin_btn: 'Sortear película de la noche',
-    film_ready: '¿Listo para el estreno?',
-    film_where_prefix: 'Dónde ver: ',
-    film_count_none: 'Ninguna película coincide con este filtro.',
-    film_count_one: ' película coincide con el filtro',
-    film_count_many: ' películas coinciden con el filtro',
-    film_add_placeholder: 'Agregar película a la lista',
-    film_add_btn: 'Agregar',
-    film_list_label: 'Lista del filtro',
-    film_toast_added: 'Película agregada a la lista',
-    film_toast_none: 'Sin películas en este filtro',
-    film_your: 'Tus películas',
-    film_your_platform: 'De tu lista',
-    challenge_front: 'Desafío',
-    challenge_hint: 'Toca para voltear',
-    challenge_draw: 'Nuevo desafío',
-    challenge_card: 'Carta',
-    q_next: 'Siguiente pregunta',
-    q_placeholder: 'Elige una categoría arriba y toca "Siguiente pregunta".',
-    q_cats: {
-      divertidas: {label:'Divertidas', sub:'Ligeras y sueltas'},
-      profundas: {label:'Profundas', sub:'De corazón'},
-      memorias: {label:'Memorias', sub:'Nuestro comienzo'},
-      romance: {label:'Romance', sub:'Solo nosotros dos'}
-    },
-    questions: {
-      divertidas: ['Si nuestra vida fuera una película, ¿cuál sería el título?','¿Qué personaje de película se parece más a mí?','Palomitas dulces o saladas, ¿es motivo de pelea?','Si pudiéramos entrar en cualquier escena de película ahora, ¿cuál sería?','¿Cuál sería la canción de apertura si fuéramos una serie?','¿Qué película fingiste que te gustaba solo porque yo la amaba?'],
-      profundas: ['¿Qué te hace sentir más amado(a) por mí?','¿Qué momento nuestro revivirías si pudieras?','¿Cómo nos imaginas de aquí a diez años?','¿Qué admiras más de en quién te estás convirtiendo?','¿Qué miedo te gustaría superar conmigo a tu lado?','¿Qué hago yo que te da sensación de "hogar"?'],
-      memorias: ['¿Cuál fue el momento exacto en que supiste que te gustaba?','¿Qué paseo o viaje nuestro más te marcó?','¿Qué fue lo primero que notaste en mí?','¿Cuál fue la mejor carcajada que tuvimos juntos?','¿Qué pequeño detalle de nuestro comienzo aún recuerdas?','¿Qué regalo mío (o tuyo) significó más de lo que parecía?'],
-      romance: ['¿Cuál fue nuestro beso más memorable?','¿Qué gesto mío más te conquista?','¿Qué encuentro nuestro repetirías esta noche?','¿Qué encuentras irresistible en mí y nunca lo has dicho en voz alta?','¿Cuál sería el escenario perfecto para nuestra próxima cita?','Describe una noche perfecta para dos en tres palabras.']
-    },
-    challenges: ['Dale un masaje de 5 minutos a tu pareja antes de que empiece la película.','Recreen su primer encuentro en solo tres frases.','Elige una canción y dedícasela a tu pareja, explicando por qué.','Beso de cine: recreen la escena de beso más famosa que recuerden.','Hagan las palomitas juntos sin decir una palabra — solo gestos.','Di tres cosas que amas de tu pareja antes de los créditos iniciales.','Cambien de lugar en el sofá e imiten cómo el otro ve películas.','Escriban una nota secreta el uno para el otro y solo léanla al final.','Describe el último buen sueño que tuviste con tu pareja.','Inventen juntos un final alternativo para la película de hoy.','Míraos a los ojos durante 30 segundos — sin reír, si pueden.','Comparte un recuerdo de los dos que nunca olvidarás.','Haz una declaración de amor al estilo del género de la película de hoy.','Vendan los ojos a tu pareja y ofrézcale tres aperitivos para adivinar.','Bailen una canción lenta en la sala, aunque sea un poco torpe.','Digan al mismo tiempo la película favorita del otro. ¿Acertaste? Suma un punto.','Tómense una selfie estilo "cartel de cine" recreando un póster famoso.','Promete una pequeña sorpresa para la próxima sesión de cine.'],
-    food_modes: {todos:'Todo',romantico:'Romántico',descontraido:'Casual',sofisticado:'Elegante',internacional:'Internacional',doce:'Postre Final'},
-    food_subs: {todos:'Sorteo libre',romantico:'Clásicos',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Por el mundo',doce:'Postres'},
-    food_spin_btn: 'Sortear el pedido',
-    food_suggest: 'Sugerir una comida',
-    food_add: 'Agregar',
-    food_toast: '¡Pedido elegido! Buen provecho 💕',
-    food_toast_added: 'Comida agregada 🍴',
-    food_toast_none: '¡Sin opciones en este modo!',
-    food_custom_label: '✨ Sugerencia de la pareja',
-    food_labels: {romantico:'Clásicos románticos',descontraido:'Comfort food',sofisticado:'Sofisticado',internacional:'Internacional',doce:'Postre final'},
-    ranking_reset_confirm: '¿Reiniciar puntos y noches? Los nombres se mantendrán.',
-    ranking_reset_toast: 'Ranking reiniciado',
-    ranking_nights_toast: '¡Una noche de cine más!',
-    player1_placeholder: 'Jugador 1',
-    player2_placeholder: 'Jugador 2',
-    ranking_nights_label: 'Noches de cine',
-    ranking_nights_sub: 'El marcador de la relación',
-    ranking_reset_btn: 'Reiniciar ranking',
-  },
-  fr: {
-    genres: ['Tous','Romance','Comédie','Horreur','Thriller','Action','Science-fiction','Musical','Animation'],
-    platforms_label: 'Tous les services',
-    rental_label: 'Location/Achat',
-    film_genre_label: 'Genre',
-    film_where_label: 'Où regarder',
-    film_spin_btn: 'Tirer le film de la nuit',
-    film_ready: 'Prêt pour la séance?',
-    film_where_prefix: 'Où regarder: ',
-    film_count_none: 'Aucun film ne correspond à ce filtre.',
-    film_count_one: ' film correspond au filtre',
-    film_count_many: ' films correspondent au filtre',
-    film_add_placeholder: 'Ajouter un film à la liste',
-    film_add_btn: 'Ajouter',
-    film_list_label: 'Liste du filtre',
-    film_toast_added: 'Film ajouté à la liste',
-    film_toast_none: 'Aucun film dans ce filtre',
-    film_your: 'Vos films',
-    film_your_platform: 'De votre liste',
-    challenge_front: 'Défi',
-    challenge_hint: 'Appuyez pour retourner',
-    challenge_draw: 'Nouveau défi',
-    challenge_card: 'Carte',
-    q_next: 'Question suivante',
-    q_placeholder: 'Choisissez une catégorie et appuyez sur "Question suivante".',
-    q_cats: {
-      divertidas: {label:'Amusantes', sub:'Légères & fun'},
-      profundas: {label:'Profondes', sub:'Du cœur'},
-      memorias: {label:'Souvenirs', sub:'Nos débuts'},
-      romance: {label:'Romance', sub:'Juste nous deux'}
-    },
-    questions: {
-      divertidas: ['Si notre vie était un film, quel serait le titre?','Quel personnage de film me ressemble le plus?','Popcorn sucré ou salé — est-ce une raison de se disputer?','Si on pouvait entrer dans n\'importe quelle scène de film maintenant, laquelle serait-ce?','Quelle serait la chanson d\'ouverture si on était une série?','Quel film as-tu fait semblant d\'aimer juste parce que je l\'aimais?'],
-      profundas: ['Qu\'est-ce qui te fait te sentir le plus aimé(e) par moi?','Quel moment à nous revivrais-tu si tu pouvais?','Comment nous imagines-tu dans dix ans?','Qu\'admires-tu le plus en qui tu deviens?','Quelle peur voudrais-tu surmonter avec moi à tes côtés?','Que fais-je qui te donne un sentiment de "maison"?'],
-      memorias: ['Quel a été le moment exact où tu as su que tu m\'aimais?','Quelle sortie ou voyage à nous t\'a le plus marqué?','Quelle a été la première chose que tu as remarquée chez moi?','Quel a été le meilleur fou rire que nous avons partagé?','Quel petit détail de nos débuts te revient encore?','Quel cadeau de ma part (ou du tien) a signifié plus qu\'il n\'y paraissait?'],
-      romance: ['Quel a été notre baiser le plus mémorable?','Quel geste de ma part te conquiert le plus?','Quel rendez-vous à nous répéterais-tu ce soir?','Qu\'est-ce que tu trouves irrésistible chez moi sans jamais le dire?','Quel serait le cadre parfait pour notre prochain rendez-vous?','Décris une nuit parfaite à deux en trois mots.']
-    },
-    challenges: ['Faites un massage de 5 minutes à votre partenaire avant que le film commence.','Recréez votre première rencontre en seulement trois phrases.','Choisissez une chanson et dédiez-la à votre partenaire en expliquant pourquoi.','Baiser de cinéma: recréez la scène de baiser la plus célèbre dont vous vous souvenez.','Faites le popcorn ensemble sans dire un mot — seulement des gestes.','Dites trois choses que vous aimez chez votre partenaire avant le générique.','Échangez de place sur le canapé et imitez la façon dont l\'autre regarde les films.','Écrivez un billet secret l\'un pour l\'autre et ne le lisez qu\'à la fin du film.','Décrivez le dernier bon rêve que vous avez eu avec votre partenaire.','Inventez ensemble une fin alternative pour le film d\'aujourd\'hui.','Regardez-vous dans les yeux pendant 30 secondes — sans rire, si vous pouvez.','Partagez un souvenir à deux que vous n\'oublierez jamais.','Faites une déclaration d\'amour dans le style du genre du film d\'aujourd\'hui.','Bandez les yeux de votre partenaire et proposez trois snacks à deviner.','Dansez sur une chanson lente dans le salon, même maladroitement.','Dites en même temps le film préféré de l\'autre. Bonne réponse? Marquez un point.','Prenez un selfie style "affiche de cinéma" en recréant une affiche célèbre.','Promettez une petite surprise pour la prochaine soirée cinéma.'],
-    food_modes: {tous:'Tout',romantico:'Romantique',descontraido:'Décontracté',sofisticado:'Chic',internacional:'International',doce:'Dessert Final'},
-    food_subs: {tous:'Tirage libre',romantico:'Classiques',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Tour du monde',doce:'Desserts'},
-    food_spin_btn: 'Tirer la commande',
-    food_suggest: 'Suggérer un plat',
-    food_add: 'Ajouter',
-    food_toast: 'Commande choisie! Bon appétit 💕',
-    food_toast_added: 'Plat ajouté 🍴',
-    food_toast_none: 'Pas d\'options dans ce mode!',
-    food_custom_label: '✨ Suggestion du couple',
-    food_labels: {romantico:'Classiques romantiques',descontraido:'Comfort food',sofisticado:'Sophistiqué',internacional:'International',doce:'Dessert final'},
-    ranking_reset_confirm: 'Réinitialiser les points et les soirées? Les noms seront conservés.',
-    ranking_reset_toast: 'Classement réinitialisé',
-    ranking_nights_toast: 'Encore une soirée cinéma!',
-    player1_placeholder: 'Joueur 1',
-    player2_placeholder: 'Joueur 2',
-    ranking_nights_label: 'Soirées cinéma',
-    ranking_nights_sub: 'Le tableau de la relation',
-    ranking_reset_btn: 'Réinitialiser',
-  },
-  it: {
-    genres: ['Tutti','Romance','Commedia','Horror','Thriller','Azione','Fantascienza','Musical','Animazione'],
-    platforms_label: 'Tutti i servizi',
-    rental_label: 'Noleggio/Acquisto',
-    film_genre_label: 'Genere',
-    film_where_label: 'Dove guardare',
-    film_spin_btn: 'Estrai il film della notte',
-    film_ready: 'Pronto per lo spettacolo?',
-    film_where_prefix: 'Dove guardare: ',
-    film_count_none: 'Nessun film corrisponde a questo filtro.',
-    film_count_one: ' film corrisponde al filtro',
-    film_count_many: ' film corrispondono al filtro',
-    film_add_placeholder: 'Aggiungi un film alla lista',
-    film_add_btn: 'Aggiungi',
-    film_list_label: 'Lista del filtro',
-    film_toast_added: 'Film aggiunto alla lista',
-    film_toast_none: 'Nessun film in questo filtro',
-    film_your: 'I tuoi film',
-    film_your_platform: 'Dalla tua lista',
-    challenge_front: 'Sfida',
-    challenge_hint: 'Tocca per girare',
-    challenge_draw: 'Nuova sfida',
-    challenge_card: 'Carta',
-    q_next: 'Prossima domanda',
-    q_placeholder: 'Scegli una categoria e tocca "Prossima domanda".',
-    q_cats: {
-      divertidas: {label:'Divertenti', sub:'Leggere & spensierate'},
-      profundas: {label:'Profonde', sub:'Dal cuore'},
-      memorias: {label:'Ricordi', sub:'Il nostro inizio'},
-      romance: {label:'Romantico', sub:'Solo noi due'}
-    },
-    questions: {
-      divertidas: ['Se la nostra vita fosse un film, qual sarebbe il titolo?','Quale personaggio di film mi somiglia di più?','Popcorn dolce o salato — è un motivo di litigio?','Se potessimo entrare in qualsiasi scena di un film ora, quale sarebbe?','Qual sarebbe la canzone di apertura se fossimo una serie?','Quale film hai finto di amare solo perché io lo adoravo?'],
-      profundas: ['Cosa ti fa sentire più amato(a) da me?','Quale momento nostro rivivresti se potessi?','Come ci immagini tra dieci anni?','Cosa ammiri di più in chi stai diventando?','Quale paura vorresti superare con me al tuo fianco?','Cosa faccio io che ti dà una sensazione di "casa"?'],
-      memorias: ['Qual è stato il momento esatto in cui hai capito che ti piacevo?','Quale gita o viaggio nostro ti è rimasto più impresso?','Qual è stata la prima cosa che hai notato di me?','Qual è stata la migliore risata che abbiamo condiviso?','Quale piccolo dettaglio del nostro inizio ricordi ancora?','Quale regalo mio (o tuo) ha significato più di quanto sembrasse?'],
-      romance: ['Qual è stato il nostro bacio più memorabile?','Quale gesto mio ti conquista di più?','Quale appuntamento nostro ripeteresti stasera?','Cosa trovi irresistibile in me che non hai mai detto ad alta voce?','Quale sarebbe lo scenario perfetto per il nostro prossimo appuntamento?','Descrivi una notte perfetta per due in tre parole.']
-    },
-    challenges: ['Fai un massaggio di 5 minuti al tuo partner prima che inizi il film.','Ricreare il vostro primo incontro in solo tre frasi.','Scegli una canzone e dedicala al tuo partner, spiegando perché.','Bacio da cinema: ricreare la scena di bacio più famosa che riuscite a ricordare.','Fate i popcorn insieme senza dire una parola — solo gesti.','Di\' tre cose che ami del tuo partner prima dei titoli iniziali.','Cambiate posto sul divano e imitate come l\'altro guarda i film.','Scrivete un biglietto segreto l\'uno per l\'altro e leggete solo alla fine.','Descrivi l\'ultimo bel sogno che hai avuto con il tuo partner.','Inventate insieme un finale alternativo per il film di stasera.','Guardatevi negli occhi per 30 secondi — senza ridere, se potete.','Condividi un ricordo di voi due che non dimentichi mai.','Fai una dichiarazione d\'amore nello stile del genere del film di stasera.','Benda gli occhi al tuo partner e offrigli tre snack da indovinare.','Ballate una canzone lenta in salotto, anche in modo goffo.','Dite allo stesso tempo il film preferito dell\'altro. Indovinato? Segna un punto.','Fate un selfie stile "locandina" ricreando un poster famoso.','Prometti una piccola sorpresa per la prossima serata cinema.'],
-    food_modes: {todos:'Tutto',romantico:'Romantico',descontraido:'Casual',sofisticado:'Elegante',internacional:'Internazionale',doce:'Dolce Finale'},
-    food_subs: {todos:'Sorteggio libero',romantico:'Classici',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Giro del mondo',doce:'Dessert'},
-    food_spin_btn: 'Estrai l\'ordine',
-    food_suggest: 'Suggerisci un cibo',
-    food_add: 'Aggiungi',
-    food_toast: 'Ordine scelto! Buon appetito 💕',
-    food_toast_added: 'Cibo aggiunto 🍴',
-    food_toast_none: 'Nessuna opzione in questa modalità!',
-    food_custom_label: '✨ Suggerimento della coppia',
-    food_labels: {romantico:'Classici romantici',descontraido:'Comfort food',sofisticado:'Sofisticato',internacional:'Internazionale',doce:'Dolce finale'},
-    ranking_reset_confirm: 'Azzerare i punti e le serate? I nomi verranno mantenuti.',
-    ranking_reset_toast: 'Classifica azzerata',
-    ranking_nights_toast: 'Ancora una serata cinema!',
-    player1_placeholder: 'Giocatore 1',
-    player2_placeholder: 'Giocatore 2',
-    ranking_nights_label: 'Serate cinema',
-    ranking_nights_sub: 'Il tabellone della relazione',
-    ranking_reset_btn: 'Azzera classifica',
-  },
-  de: {
-    genres: ['Alle','Romantik','Komödie','Horror','Thriller','Aktion','Science-Fiction','Musical','Animation'],
-    platforms_label: 'Alle Dienste',
-    rental_label: 'Leihen/Kaufen',
-    film_genre_label: 'Genre',
-    film_where_label: 'Wo schauen',
-    film_spin_btn: 'Film der Nacht ziehen',
-    film_ready: 'Bereit für die Vorstellung?',
-    film_where_prefix: 'Wo schauen: ',
-    film_count_none: 'Kein Film entspricht diesem Filter.',
-    film_count_one: ' Film entspricht dem Filter',
-    film_count_many: ' Filme entsprechen dem Filter',
-    film_add_placeholder: 'Film zur Liste hinzufügen',
-    film_add_btn: 'Hinzufügen',
-    film_list_label: 'Filterliste',
-    film_toast_added: 'Film zur Liste hinzugefügt',
-    film_toast_none: 'Kein Film in diesem Filter',
-    film_your: 'Deine Filme',
-    film_your_platform: 'Von deiner Liste',
-    challenge_front: 'Challenge',
-    challenge_hint: 'Tippen zum Umdrehen',
-    challenge_draw: 'Neue Challenge',
-    challenge_card: 'Karte',
-    q_next: 'Nächste Frage',
-    q_placeholder: 'Wähle eine Kategorie und tippe auf "Nächste Frage".',
-    q_cats: {
-      divertidas: {label:'Lustig', sub:'Leicht & locker'},
-      profundas: {label:'Tiefgründig', sub:'Von Herzen'},
-      memorias: {label:'Erinnerungen', sub:'Unser Anfang'},
-      romance: {label:'Romantik', sub:'Nur wir zwei'}
-    },
-    questions: {
-      divertidas: ['Wenn unser Leben ein Film wäre, wie würde er heißen?','Welche Filmfigur ähnelt mir am meisten?','Süßes oder salziges Popcorn — ist das einen Streit wert?','Wenn wir jetzt in eine beliebige Filmszene eintreten könnten, welche wäre das?','Was wäre der Titelsong, wenn wir eine Serie wären?','Welchen Film hast du so getan als ob du ihn magst, nur weil ich ihn liebte?'],
-      profundas: ['Was lässt dich am meisten von mir geliebt fühlen?','Welchen Moment von uns würdest du wiedererleben, wenn du könntest?','Wie stellst du uns in zehn Jahren vor?','Was bewunderst du am meisten daran, wer du wirst?','Welche Angst würdest du gerne mit mir an deiner Seite überwinden?','Was tue ich, das dir ein Gefühl von "Zuhause" gibt?'],
-      memorias: ['Was war der genaue Moment, in dem du wusstest, dass du mich magst?','Welcher Ausflug oder welche Reise von uns hat dich am meisten geprägt?','Was war das Erste, das du an mir bemerkt hast?','Was war das beste gemeinsame Lachen?','An welches kleine Detail unserer Anfänge erinnerst du dich noch?','Welches Geschenk von mir (oder deins) hat mehr bedeutet als es schien?'],
-      romance: ['Was war unser denkwürdigster Kuss?','Welche Geste von mir erobert dich am meisten?','Welches Date von uns würdest du heute Abend wiederholen?','Was findest du an mir unwiderstehlich und hast es nie laut gesagt?','Was wäre der perfekte Rahmen für unser nächstes Date?','Beschreibe eine perfekte Nacht zu zweit in drei Worten.']
-    },
-    challenges: ['Gib deinem Partner eine 5-minütige Massage, bevor der Film beginnt.','Spielt euer erstes Treffen in nur drei Sätzen nach.','Wähle ein Lied und widme es deinem Partner, erkläre warum.','Kinokuss: Spielt die berühmteste Kussszene nach, die ihr euch vorstellen könnt.','Macht das Popcorn zusammen, ohne ein Wort zu sagen — nur Gesten.','Sag drei Dinge, die du an deinem Partner liebst, bevor der Vorspann beginnt.','Tauscht auf dem Sofa die Plätze und ahmt nach, wie der andere Filme schaut.','Schreibt einander einen geheimen Zettel und lest ihn erst am Ende des Films.','Beschreibe den letzten guten Traum, den du mit deinem Partner hattest.','Erfindet gemeinsam ein alternatives Ende für den heutigen Film.','Schaut euch 30 Sekunden in die Augen — ohne zu lachen, wenn ihr könnt.','Teile eine Erinnerung zu zweit, die du nie vergisst.','Mach eine Liebeserklärung im Stil des heutigen Filmgenres.','Verbinde deinem Partner die Augen und biete drei Snacks zum Erraten an.','Tanzt zu einem langsamen Lied im Wohnzimmer, auch wenn es etwas ungeschickt ist.','Sagt gleichzeitig den Lieblingsfilm des anderen. Richtig? Einen Punkt!','Macht ein Selfie im "Filmplakat"-Stil und recreiert ein berühmtes Poster.','Versprich eine kleine Überraschung für den nächsten Filmabend.'],
-    food_modes: {todos:'Alles',romantico:'Romantisch',descontraido:'Entspannt',sofisticado:'Edel',internacional:'International',doce:'Süßes Finale'},
-    food_subs: {todos:'Freie Ziehung',romantico:'Klassiker',descontraido:'Comfort food',sofisticado:'Gourmet',internacional:'Weltreise',doce:'Desserts'},
-    food_spin_btn: 'Bestellung auslosen',
-    food_suggest: 'Essen vorschlagen',
-    food_add: 'Hinzufügen',
-    food_toast: 'Bestellung gewählt! Guten Appetit 💕',
-    food_toast_added: 'Essen hinzugefügt 🍴',
-    food_toast_none: 'Keine Optionen in diesem Modus!',
-    food_custom_label: '✨ Paar-Vorschlag',
-    food_labels: {romantico:'Romantische Klassiker',descontraido:'Comfort food',sofisticado:'Sophistiziert',internacional:'International',doce:'Süßes Finale'},
-    ranking_reset_confirm: 'Punkte und Filmabende zurücksetzen? Namen bleiben erhalten.',
-    ranking_reset_toast: 'Rangliste zurückgesetzt',
-    ranking_nights_toast: 'Noch ein Filmabend!',
-    player1_placeholder: 'Spieler 1',
-    player2_placeholder: 'Spieler 2',
-    ranking_nights_label: 'Filmabende',
-    ranking_nights_sub: 'Das Beziehungs-Scoreboard',
-    ranking_reset_btn: 'Rangliste zurücksetzen',
-  },
-  ja: {
-    genres: ['すべて','ロマンス','コメディ','ホラー','スリラー','アクション','SF','ミュージカル','アニメ'],
-    platforms_label: 'すべてのサービス',
-    rental_label: 'レンタル/購入',
-    film_genre_label: 'ジャンル',
-    film_where_label: '視聴場所',
-    film_spin_btn: '今夜の映画を抽選',
-    film_ready: '上映の準備はいい?',
-    film_where_prefix: '視聴場所: ',
-    film_count_none: 'このフィルターに合う映画はありません。',
-    film_count_one: ' 本の映画がフィルターに合致',
-    film_count_many: ' 本の映画がフィルターに合致',
-    film_add_placeholder: 'リストに映画を追加',
-    film_add_btn: '追加',
-    film_list_label: 'フィルターリスト',
-    film_toast_added: 'リストに映画を追加しました',
-    film_toast_none: 'このフィルターに映画がありません',
-    film_your: 'あなたの映画',
-    film_your_platform: 'あなたのリストから',
-    challenge_front: 'チャレンジ',
-    challenge_hint: 'タップして裏返す',
-    challenge_draw: '新しいチャレンジ',
-    challenge_card: 'カード',
-    q_next: '次の質問',
-    q_placeholder: '上のカテゴリを選んで「次の質問」をタップ。',
-    q_cats: {
-      divertidas: {label:'楽しい', sub:'軽くて気楽'},
-      profundas: {label:'深い', sub:'心から'},
-      memorias: {label:'思い出', sub:'はじまりの頃'},
-      romance: {label:'ロマンス', sub:'二人だけで'}
-    },
-    questions: {
-      divertidas: ['もし私たちの人生が映画だったら、タイトルは何?','私に一番似ている映画キャラは誰?','甘いポップコーンか塩味か — これは喧嘩の理由になる?','今すぐ映画のどんなシーンにも入れたら、どのシーンにする?','もし私たちがドラマだったら、オープニング曲は何?','私が好きだからというだけで好きなふりをした映画は?'],
-      profundas: ['私に一番愛されていると感じるのはどんな時?','もし再体験できるなら、どの瞬間を選ぶ?','10年後の私たちをどう想像する?','あなたが今なりつつある自分のどこを一番尊敬してる?','私が隣にいれば乗り越えたい恐れは何?','私がすることでどんな「ホーム」感を感じる?'],
-      memorias: ['私のことが好きだと気づいた瞬間はいつ?','一番心に残った二人の旅や外出は?','最初に私のどこに気づいた?','一緒に笑った最高の瞬間は?','二人のはじまりの小さなどんな詳細を今でも覚えてる?','予想以上に意味があった贈り物は?'],
-      romance: ['一番印象的なキスはいつ?','私のどんなジェスチャーが一番心を掴む?','もう一度繰り返したいデートはどれ?','声に出して言ったことのない私のどこが抗えない?','次のデートの完璧なシーンは?','二人で過ごす完璧な夜を3語で描写して。']
-    },
-    challenges: ['映画が始まる前にパートナーに5分間のマッサージをしてあげよう。','3文だけで初めて会った時を再現しよう。','曲を選んでパートナーに捧げよう、理由も添えて。','シネマキス: 思い出せる一番有名なキスシーンを再現しよう。','一言も話さずに一緒にポップコーンを作ろう — ジェスチャーだけで。','冒頭クレジットの前にパートナーのことが好きな3つのことを言おう。','ソファで席を交換してお互いの映画の見方を真似しよう。','秘密のメモをお互いに書いて映画の最後まで読まないでおこう。','パートナーと一緒に見た最後の良い夢を描写しよう。','今日の映画のオルタナティブエンディングを一緒に考えよう。','30秒間お互いの目を見つめよう — できれば笑わずに。','忘れられない二人の思い出を分かち合おう。','今日の映画のジャンルスタイルで愛の告白をしよう。','パートナーの目を隠して3つのスナックを当ててもらおう。','部屋でスローダンスしよう、少し不格好でも。','同時に相手の好きな映画を言ってみよう。正解したらポイント!','有名なポスターを再現して「映画ポスター」風セルフィーを撮ろう。','次の映画ナイトのために小さなサプライズを約束しよう。'],
-    food_modes: {todos:'すべて',romantico:'ロマンチック',descontraido:'カジュアル',sofisticado:'おしゃれ',internacional:'インターナショナル',doce:'スイートエンディング'},
-    food_subs: {todos:'フリー抽選',romantico:'クラシック',descontraido:'コンフォートフード',sofisticado:'グルメ',internacional:'世界旅行',doce:'デザート'},
-    food_spin_btn: '注文を抽選',
-    food_suggest: '料理を提案',
-    food_add: '追加',
-    food_toast: '注文決定！いただきます 💕',
-    food_toast_added: '料理を追加しました 🍴',
-    food_toast_none: 'このモードにはオプションがありません！',
-    food_custom_label: '✨ カップル提案',
-    food_labels: {romantico:'ロマンチッククラシック',descontraido:'コンフォートフード',sofisticado:'ソフィスティケート',internacional:'インターナショナル',doce:'スイートエンディング'},
-    ranking_reset_confirm: 'ポイントと映画の夜をリセット？名前は保持されます。',
-    ranking_reset_toast: 'ランキングリセット',
-    ranking_nights_toast: 'また映画の夜！',
-    player1_placeholder: 'プレイヤー1',
-    player2_placeholder: 'プレイヤー2',
-    ranking_nights_label: '映画の夜',
-    ranking_nights_sub: '関係のスコアボード',
-    ranking_reset_btn: 'リセット',
-  }
-};
-
-function getLang(){ return CONTENT[currentLang] || CONTENT.en; }
-
-function applyContentLang(){
-  const L = getLang();
-  // Genre pills
-  const catPillsEl = document.getElementById('catPills');
-  if(catPillsEl){
-    const pills = catPillsEl.querySelectorAll('.fpill');
-    pills.forEach((pill, i) => {
-      if(L.genres[i]) pill.textContent = L.genres[i];
-    });
-    // Update activeCat to match new genre name
-    activeCat = L.genres[0]; // reset to "All" equivalent
-    store.set('dncp_cat_film', activeCat);
-    pills.forEach(p => p.classList.toggle('active', p === pills[0]));
-  }
-  // Stream filter
-  const streamSelEl = document.getElementById('streamFilter');
-  if(streamSelEl){
-    const opts = streamSelEl.querySelectorAll('option');
-    if(opts[0]) opts[0].textContent = L.platforms_label;
-    opts.forEach(opt => { if(opt.value === 'Aluguel/Compra') opt.textContent = L.rental_label; });
-  }
-  // Film section labels
-  const filmGenreLabel = document.querySelector('#panel-filmes .filter-label');
-  if(filmGenreLabel) filmGenreLabel.textContent = L.film_genre_label;
-  // Spin button
-  const spinBtnEl = document.getElementById('spinBtn');
-  if(spinBtnEl){ const svg = spinBtnEl.querySelector('svg'); spinBtnEl.innerHTML=''; if(svg) spinBtnEl.appendChild(svg); spinBtnEl.append(' '+L.film_spin_btn); }
-  // Film reel placeholder
-  const pickElEl = document.getElementById('pick');
-  if(pickElEl && (pickElEl.textContent === 'Pronto para a estreia?' || pickElEl.textContent === 'Ready for the show?' || pickElEl.textContent === '¿Listo para el estreno?' || pickElEl.textContent === 'Bereit für die Vorstellung?' || pickElEl.textContent === '上映の準備はいい?')) pickElEl.textContent = L.film_ready;
-  // Add film input
-  const movieInputEl = document.getElementById('movieInput');
-  if(movieInputEl) movieInputEl.placeholder = L.film_add_placeholder;
-  const addMovieEl = document.getElementById('addMovie');
-  if(addMovieEl) addMovieEl.textContent = L.film_add_btn;
-  // Challenge
-  const faceFrontLabel = document.querySelector('.face.front .label');
-  if(faceFrontLabel) faceFrontLabel.textContent = L.challenge_front;
-  const faceHint = document.querySelector('.face.front .hint');
-  if(faceHint) faceHint.textContent = L.challenge_hint;
-  const drawChallengeEl = document.getElementById('drawChallenge');
-  if(drawChallengeEl){ const svg = drawChallengeEl.querySelector('svg'); drawChallengeEl.innerHTML=''; if(svg) drawChallengeEl.appendChild(svg); drawChallengeEl.append(' '+L.challenge_draw); }
-  // Questions
-  const nextQEl = document.getElementById('nextQ');
-  if(nextQEl){ const svg = nextQEl.querySelector('svg'); nextQEl.innerHTML=''; if(svg) nextQEl.appendChild(svg); nextQEl.append(' '+L.q_next); }
-  const questionElEl = document.getElementById('question');
-  if(questionElEl && questionElEl.classList.contains('ph')) questionElEl.textContent = L.q_placeholder;
-  // Question categories
-  const catEls = document.querySelectorAll('.cat');
-  const catKeys = ['divertidas','profundas','memorias','romance'];
-  catEls.forEach((el, i) => {
-    const key = catKeys[i];
-    if(L.q_cats[key]) el.innerHTML = L.q_cats[key].label + '<span>' + L.q_cats[key].sub + '</span>';
-  });
-  // Food modes
-  const foodModeBtns = document.querySelectorAll('.food-mode');
-  const foodModeKeys = ['todos','romantico','descontraido','sofisticado','internacional','doce'];
-  foodModeBtns.forEach((btn, i) => {
-    const key = foodModeKeys[i];
-    if(L.food_modes[key]){
-      const icon = btn.querySelector('.fmicon');
-      const iconText = icon ? icon.textContent : '';
-      btn.innerHTML = '<span class="fmicon">'+iconText+'</span>'+L.food_modes[key]+'<span>'+L.food_subs[key]+'</span>';
-    }
-  });
-  // Food spin btn
-  const foodSpinBtnEl = document.getElementById('foodSpinBtn');
-  if(foodSpinBtnEl){ const svg = foodSpinBtnEl.querySelector('svg'); foodSpinBtnEl.innerHTML=''; if(svg) foodSpinBtnEl.appendChild(svg); foodSpinBtnEl.append(' '+L.food_spin_btn); }
-  // Food input
-  const foodInputEl = document.getElementById('foodInput');
-  if(foodInputEl) foodInputEl.placeholder = L.food_suggest;
-  const addFoodEl = document.getElementById('addFood');
-  if(addFoodEl) addFoodEl.textContent = L.food_add;
-  // Ranking
-  const resetRankingEl = document.getElementById('resetRanking');
-  if(resetRankingEl) resetRankingEl.textContent = L.ranking_reset_btn;
-  const nightsLabEl = document.querySelector('.nights .lab');
-  if(nightsLabEl) nightsLabEl.innerHTML = L.ranking_nights_label+'<span>'+L.ranking_nights_sub+'</span>';
-  // Player placeholders
-  const n0 = document.getElementById('name0');
-  const n1 = document.getElementById('name1');
-  if(n0 && !n0.value) n0.placeholder = L.player1_placeholder;
-  if(n1 && !n1.value) n1.placeholder = L.player2_placeholder;
-  // Update CHALLENGES and QUESTIONS arrays
-  window._currentChallenges = L.challenges;
-  window._currentQuestions = L.questions;
-  window._currentQCats = L.q_cats;
-  window._currentContent = L;
-  updateCount();
-}
-
-// Override challenge/question functions to use translated content
-const _origDrawChallenge = window.drawChallenge;
+// 5. Override content-dependent functions
 function drawChallenge(){
-  const arr = window._currentChallenges || CHALLENGES;
-  let i; do{ i=Math.floor(Math.random()*arr.length); }while(i===lastChallenge&&arr.length>1);
+  const arr = (CONTENT.challenges[cl()]||CONTENT.challenges.pt);
+  let i; do{i=Math.floor(Math.random()*arr.length);}while(i===lastChallenge&&arr.length>1);
   lastChallenge=i;
   challengeText.textContent=arr[i];
-  const L = getLang();
-  challengeNum.textContent=(L.challenge_card||'Carta')+' '+(i+1);
+  challengeNum.textContent=ct(CONTENT.challenge_card)+' '+(i+1);
   flip.classList.add('flipped');
 }
-flip.removeEventListener('click', flip._clickHandler);
-flip._clickHandler = ()=>{flip.classList.contains('flipped')?flip.classList.remove('flipped'):drawChallenge();};
-flip.addEventListener('click', flip._clickHandler);
-document.getElementById('drawChallenge').onclick = ()=>{if(flip.classList.contains('flipped')){flip.classList.remove('flipped');setTimeout(drawChallenge,420);}else drawChallenge();};
+flip.onclick = ()=>{ flip.classList.contains('flipped')?flip.classList.remove('flipped'):drawChallenge(); };
+document.getElementById('drawChallenge').onclick = ()=>{
+  if(flip.classList.contains('flipped')){flip.classList.remove('flipped');setTimeout(drawChallenge,420);}else drawChallenge();
+};
 
 function nextQuestion(){
-  const L = getLang();
-  const qMap = window._currentQuestions || QUESTIONS;
-  const list = (qMap[currentCat] || QUESTIONS[currentCat] || []);
+  const qmap = CONTENT.questions[cl()]||CONTENT.questions.pt;
+  const list = qmap[currentCat]||qmap.divertidas;
   let i; do{i=Math.floor(Math.random()*list.length);}while(i===lastQ&&list.length>1);
   lastQ=i;
   questionEl.classList.remove('ph');
   questionEl.textContent=list[i];
-  questionEl.style.animation='none';
-  void questionEl.offsetWidth;
-  questionEl.style.animation='';
+  questionEl.style.animation='none';void questionEl.offsetWidth;questionEl.style.animation='';
 }
 document.getElementById('nextQ').onclick = nextQuestion;
 
-// Override toast messages
-const _origToast = toast;
-function toastL(key){ _origToast((getLang()[key]||key)); }
+function selectCat(key){
+  currentCat=key;store.set('dncp_cat',key);lastQ=-1;
+  document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active',c.dataset.cat===key));
+  nextQuestion();
+}
+document.querySelectorAll('.cat').forEach(el=>{
+  el.onclick=()=>selectCat(el.dataset.cat);
+  el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectCat(el.dataset.cat);}};
+});
 
-// Override addMovie toast
-const _origAddMovie = window.addMovie;
 document.getElementById('addMovie').onclick = ()=>{
   const inp=document.getElementById('movieInput');const v=inp.value.trim();if(!v)return;
-  custom.push({t:v,c:getLang().film_your||'Seus filmes',s:getLang().film_your_platform||'Da sua lista'});
+  custom.push({t:v,c:ct(CONTENT.film_yours),s:ct(CONTENT.film_yours_platform)});
   store.set('dncp_custom',custom);inp.value='';
   updateCount();if(listBox.classList.contains('open'))renderList();
-  toast(getLang().film_toast_added||'Filme adicionado');
+  toast(ct(CONTENT.film_toast_added));
 };
 
-// Override addFood toast  
 document.getElementById('addFood').onclick = ()=>{
   const inp=document.getElementById('foodInput');const v=inp.value.trim();if(!v)return;
   customFoods.push(v);store.set('dncp_custom_foods',customFoods);inp.value='';
-  updateFoodCount();toast(getLang().food_toast_added||'Comida adicionada 🍴');
+  updateFoodCount();toast(ct(CONTENT.food_toast_added));
 };
 
-// Override reset ranking
 document.getElementById('resetRanking').onclick = ()=>{
-  const L=getLang();
-  if(confirm(L.ranking_reset_confirm)){
+  if(confirm(ct(CONTENT.ranking_reset_confirm))){
     rank.scores=[0,0];rank.nights=0;saveRank();renderRank();
-    toast(L.ranking_reset_toast||'Ranking zerado');
+    toast(ct(CONTENT.ranking_reset_toast));
   }
 };
 
-// Override night buttons toast
 document.getElementById('nightPlus').onclick = ()=>{
-  rank.nights++;saveRank();renderRank();
-  toast(getLang().ranking_nights_toast||'Mais uma noite de cinema!');
+  rank.nights++;saveRank();renderRank();toast(ct(CONTENT.ranking_nights_toast));
 };
 
-// Override food spin toast
 document.getElementById('foodSpinBtn').onclick = ()=>{
-  const pool=getFoodPool();const L=getLang();
-  if(!pool.length){toast(L.food_toast_none||'Sem opções');return;}
+  const pool=getFoodPool();
+  if(!pool.length){toast(ct(CONTENT.food_toast_none));return;}
   foodReel.classList.remove('win');foodReel.classList.add('spin');
   let ticks=0;const maxTicks=14;
   const interval=setInterval(()=>{
@@ -1764,25 +1419,27 @@ document.getElementById('foodSpinBtn').onclick = ()=>{
       let idx;do{idx=Math.floor(Math.random()*pool.length);}while(idx===lastFood&&pool.length>1);
       lastFood=idx;const chosen=pool[idx];
       foodPickEl.textContent=chosen.f;
-      const modeLabels=L.food_labels||{};
-      foodCatEl.textContent=chosen.m==='custom'?(L.food_custom_label||'✨ Sugestão'):(activeFoodMode==='todos'?(FOOD_MODE_EMOJI[chosen.m]||'')+' '+(modeLabels[chosen.m]||''):'');
+      foodCatEl.textContent=chosen.m==='custom'?ct(CONTENT.food_custom):(activeFoodMode==='todos'?(FOOD_MODE_EMOJI[chosen.m]||'')+' '+(FOOD_MODE_LABELS[chosen.m]||''):'');
       foodNumEl.textContent='#'+(Object.values(FOODS).flat().indexOf(chosen.f)+1);
       foodNumEl.style.opacity='1';
       foodReel.classList.remove('spin');foodReel.classList.add('win');
-      toast(L.food_toast||'Pedido escolhido! 💕');
+      toast(ct(CONTENT.food_toast));
     }
   },80);
 };
 
-// Extend applyLang to also apply content
-const _origApplyLang = applyLang;
-function applyLang(){
-  _origApplyLang();
-  applyContentLang();
-}
+// 6. Logout
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  if(confirm(ct(CONTENT.ranking_reset_confirm).split('?')[0]+'?')){
+    localStorage.removeItem('dncp_session');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('login-email').value='';
+    document.getElementById('email-error').textContent='';
+  }
+});
 
-// Apply content on load
-applyContentLang();
+// 7. Init
+applyAllLang();
 
 </script>
 </body>
