@@ -370,20 +370,20 @@
     <div class="card">
       <div class="sec-head">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h18v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7Z"/><path d="m3 7 3-4h12l3 4"/><path d="m7 3 2 4M12 3l2 4M17 3l2 4"/></svg></span>
-        <h2>Sorteador de filmes</h2>
+        <h2 data-i18n="nav_films_title">Sorteador de filmes</h2>
       </div>
-      <p class="sec-desc">200 filmes para o Dia dos Namorados, com onde assistir. Filtre por clima e por streaming, e deixe a sorte escolher.</p>
+      <p class="sec-desc" data-i18n="films_desc">200 filmes para o Dia dos Namorados, com onde assistir. Filtre por clima e por streaming, e deixe a sorte escolher.</p>
 
-      <div class="filter-label">Gênero</div>
+      <div class="filter-label" data-i18n="film_genre_label">Gênero</div>
       <div class="fpills" id="catPills" role="group" aria-label="Filtrar por gênero"></div>
 
-      <div class="filter-label" style="margin-top:14px">Onde assistir</div>
+      <div class="filter-label" style="margin-top:14px" data-i18n="film_where_label">Onde assistir</div>
       <select id="streamFilter" aria-label="Filtrar por serviço de streaming"></select>
 
       <div class="reel" id="reel" aria-live="polite" style="margin-top:18px">
         <div class="spotlight"></div>
         <div>
-          <div class="pick" id="pick">Pronto para a estreia?</div>
+          <div class="pick" id="pick" data-i18n-ph="film_ready">Pronto para a estreia?</div>
           <div class="genre" id="genre"></div>
           <div class="stream" id="stream"></div>
         </div>
@@ -414,9 +414,9 @@
     <div class="card">
       <div class="sec-head">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="11" height="15" rx="2"/><path d="M8 21h11a2 2 0 0 0 2-2V8"/></svg></span>
-        <h2>Cartões de desafios</h2>
+        <h2 data-i18n="nav_challenges_title">Cartões de desafios</h2>
       </div>
-      <p class="sec-desc">Toque na carta para virar e descobrir o desafio da rodada. Boa sorte aos dois.</p>
+      <p class="sec-desc" data-i18n="challenges_desc">Toque na carta para virar e descobrir o desafio da rodada. Boa sorte aos dois.</p>
       <div class="flip-stage">
         <div class="flip" id="flip" role="button" tabindex="0" aria-label="Virar carta de desafio">
           <div class="face front">
@@ -440,11 +440,11 @@
     <div class="card">
       <div class="sec-head">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4 9 9 0 0 1-4-1L3 20l1.1-4A8.5 8.5 0 1 1 21 11.5Z"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.3"/><path d="M12 16h.01"/></svg></span>
-        <h2>Jogos de perguntas</h2>
+        <h2 data-i18n="nav_questions_title">Jogos de perguntas</h2>
       </div>
-      <p class="sec-desc">Escolha um clima e descubram coisas novas um sobre o outro entre uma cena e outra.</p>
+      <p class="sec-desc" data-i18n="questions_desc">Escolha um clima e descubram coisas novas um sobre o outro entre uma cena e outra.</p>
       <div class="cats" id="cats"></div>
-      <div class="q-card"><div class="ph q" id="question">Escolha uma categoria acima e toque em "Próxima pergunta".</div></div>
+      <div class="q-card"><div class="ph q" id="question">ph_placeholder</div></div>
       <div style="margin-top:18px">
         <button class="btn" id="nextQ" style="width:100%">
           <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
@@ -458,9 +458,9 @@
     <div class="card">
       <div class="sec-head">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>
-        <h2>Ranking do casal</h2>
+        <h2 data-i18n="nav_ranking_title">Ranking do casal</h2>
       </div>
-      <p class="sec-desc">Marquem pontos nos desafios e perguntas. Toque no nome para editar. A coroa é de quem lidera.</p>
+      <p class="sec-desc" data-i18n="ranking_desc">Marquem pontos nos desafios e perguntas. Toque no nome para editar. A coroa é de quem lidera.</p>
       <div class="scoreboard">
         <div class="player" id="p0">
           <div class="crown" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 8 4 4 5-7 5 7 4-4-2 11H5L3 8Z"/></svg></div>
@@ -493,11 +493,11 @@
     <div class="card">
       <div class="sec-head">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8Z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
-        <h2>Sorteador de comidas</h2>
+        <h2 data-i18n="nav_food_title">Sorteador de comidas</h2>
       </div>
-      <p class="sec-desc">120 opções para casais — do clássico ao sofisticado. Escolha o clima da noite e deixa o destino decidir o pedido.</p>
+      <p class="sec-desc" data-i18n="food_desc">120 opções para casais — do clássico ao sofisticado. Escolha o clima da noite e deixa o destino decidir o pedido.</p>
 
-      <div class="filter-label">Clima da noite</div>
+      <div class="filter-label" data-i18n="food_mood_label">Clima da noite</div>
       <div class="food-modes" id="foodModes">
         <button class="food-mode active" data-mode="todos">
           <span class="fmicon">🎲</span>Tudo
@@ -1145,13 +1145,13 @@ let currentLang = detectLang();
 
 // 2. Translation tables
 const TR = {
-  pt:{logout:'Sair',nav_films:'Filmes',nav_challenges:'Desafios',nav_questions:'Perguntas',nav_ranking:'Ranking',nav_food:'Comidas',tagline:'O plano perfeito para a <b>noite perfeita</b>',login_sub:'Entre com seu e-mail para acessar',login_label:'Seu e-mail',login_placeholder:'seuemail@exemplo.com',login_btn:'Entrar',login_err_invalid:'Digite um e-mail válido',login_err_denied:'❌ Este e-mail não tem acesso ao Dateflix.',login_err_network:'Erro ao verificar. Tente novamente.',login_checking:'Verificando...'},
-  en:{logout:'Logout',nav_films:'Movies',nav_challenges:'Challenges',nav_questions:'Questions',nav_ranking:'Ranking',nav_food:'Food',tagline:'The perfect plan for the <b>perfect night</b>',login_sub:'Enter your email to access',login_label:'Your email',login_placeholder:'youremail@example.com',login_btn:'Enter',login_err_invalid:'Enter a valid email',login_err_denied:'❌ This email does not have access to Dateflix.',login_err_network:'Verification error. Try again.',login_checking:'Checking...'},
-  es:{logout:'Salir',nav_films:'Películas',nav_challenges:'Desafíos',nav_questions:'Preguntas',nav_ranking:'Ranking',nav_food:'Comida',tagline:'El plan perfecto para la <b>noche perfecta</b>',login_sub:'Ingresa tu correo para acceder',login_label:'Tu correo',login_placeholder:'tucorreo@ejemplo.com',login_btn:'Entrar',login_err_invalid:'Ingresa un correo válido',login_err_denied:'❌ Este correo no tiene acceso a Dateflix.',login_err_network:'Error al verificar.',login_checking:'Verificando...'},
-  fr:{logout:'Déconnexion',nav_films:'Films',nav_challenges:'Défis',nav_questions:'Questions',nav_ranking:'Classement',nav_food:'Nourriture',tagline:'Le plan parfait pour la <b>nuit parfaite</b>',login_sub:'Entrez votre email pour accéder',login_label:'Votre email',login_placeholder:'votemail@exemple.com',login_btn:'Entrer',login_err_invalid:'Entrez un email valide',login_err_denied:'❌ Cet email n\'a pas accès à Dateflix.',login_err_network:'Erreur de vérification.',login_checking:'Vérification...'},
-  it:{logout:'Esci',nav_films:'Film',nav_challenges:'Sfide',nav_questions:'Domande',nav_ranking:'Classifica',nav_food:'Cibo',tagline:'Il piano perfetto per la <b>notte perfetta</b>',login_sub:'Inserisci la tua email per accedere',login_label:'La tua email',login_placeholder:'tuaemail@esempio.com',login_btn:'Entra',login_err_invalid:'Inserisci un\'email valida',login_err_denied:'❌ Questa email non ha accesso a Dateflix.',login_err_network:'Errore di verifica.',login_checking:'Verifica...'},
-  de:{logout:'Abmelden',nav_films:'Filme',nav_challenges:'Challenges',nav_questions:'Fragen',nav_ranking:'Rangliste',nav_food:'Essen',tagline:'Der perfekte Plan für die <b>perfekte Nacht</b>',login_sub:'E-Mail eingeben um zuzugreifen',login_label:'Deine E-Mail',login_placeholder:'email@beispiel.de',login_btn:'Einloggen',login_err_invalid:'Gib eine gültige E-Mail ein',login_err_denied:'❌ Diese E-Mail hat keinen Zugang.',login_err_network:'Fehler bei der Überprüfung.',login_checking:'Prüfen...'},
-  ja:{logout:'ログアウト',nav_films:'映画',nav_challenges:'チャレンジ',nav_questions:'質問',nav_ranking:'ランキング',nav_food:'料理',tagline:'完璧な夜のための<b>完璧なプラン</b>',login_sub:'メールアドレスを入力してアクセス',login_label:'メールアドレス',login_placeholder:'youremail@example.com',login_btn:'入る',login_err_invalid:'有効なメールアドレスを入力',login_err_denied:'❌ このメールはアクセスできません。',login_err_network:'確認エラー。',login_checking:'確認中...'}
+  pt:{logout:'Sair',nav_films:'Filmes',nav_challenges:'Desafios',nav_questions:'Perguntas',nav_ranking:'Ranking',nav_food:'Comidas',tagline:'O plano perfeito para a <b>noite perfeita</b>',login_sub:'Entre com seu e-mail para acessar',login_label:'Seu e-mail',login_placeholder:'seuemail@exemplo.com',login_btn:'Entrar',login_err_invalid:'Digite um e-mail válido',login_err_denied:'❌ Este e-mail não tem acesso ao Dateflix.',login_err_network:'Erro ao verificar. Tente novamente.',login_checking:'Verificando...',nav_films_title:'Sorteador de filmes',films_desc:'200 filmes para o Dia dos Namorados, com onde assistir.',film_genre_label:'Gênero',film_where_label:'Onde assistir',nav_challenges_title:'Cartões de desafios',challenges_desc:'Toque na carta para virar e descobrir o desafio da rodada.',nav_questions_title:'Jogos de perguntas',questions_desc:'Escolha um clima e descubram coisas novas um sobre o outro.',nav_ranking_title:'Ranking do casal',ranking_desc:'Marquem pontos nos desafios e perguntas. A coroa é de quem lidera.',nav_food_title:'Sorteador de comidas',food_desc:'120 opções para casais — do clássico ao sofisticado.',food_mood_label:'Clima da noite'},
+  en:{logout:'Logout',nav_films:'Movies',nav_challenges:'Challenges',nav_questions:'Questions',nav_ranking:'Ranking',nav_food:'Food',tagline:'The perfect plan for the <b>perfect night</b>',login_sub:'Enter your email to access',login_label:'Your email',login_placeholder:'youremail@example.com',login_btn:'Enter',login_err_invalid:'Enter a valid email',login_err_denied:'❌ This email does not have access to Dateflix.',login_err_network:'Verification error. Try again.',login_checking:'Checking...',nav_films_title:'Movie Roulette',films_desc:'200 movies for date night. Filter by mood and streaming.',film_genre_label:'Genre',film_where_label:'Where to watch',nav_challenges_title:'Challenge Cards',challenges_desc:'Tap the card to flip it and discover the challenge.',nav_questions_title:'Couple Games',questions_desc:'Choose a mood and discover new things about each other.',nav_ranking_title:'Couple Ranking',ranking_desc:'Score points in challenges and questions. The crown goes to the leader.',nav_food_title:'Food Roulette',food_desc:'120 options for couples from classic to sophisticated.',food_mood_label:'Tonight mood'},
+  es:{logout:'Salir',nav_films:'Películas',nav_challenges:'Desafíos',nav_questions:'Preguntas',nav_ranking:'Ranking',nav_food:'Comida',tagline:'El plan perfecto para la <b>noche perfecta</b>',login_sub:'Ingresa tu correo para acceder',login_label:'Tu correo',login_placeholder:'tucorreo@ejemplo.com',login_btn:'Entrar',login_err_invalid:'Ingresa un correo válido',login_err_denied:'❌ Este correo no tiene acceso a Dateflix.',login_err_network:'Error al verificar.',login_checking:'Verificando...',nav_films_title:'Sorteo de películas',films_desc:'200 películas para el Día de los Enamorados.',film_genre_label:'Género',film_where_label:'Dónde ver',nav_challenges_title:'Cartas de desafíos',challenges_desc:'Toca la carta para voltearla y descubrir el desafío.',nav_questions_title:'Juegos de pareja',questions_desc:'Elige un ambiente y descubran cosas nuevas.',nav_ranking_title:'Ranking de pareja',ranking_desc:'Anota puntos en desafíos y preguntas.',nav_food_title:'Sorteo de comida',food_desc:'120 opciones para parejas.',food_mood_label:'Ambiente de la noche'},
+  fr:{logout:'Déconnexion',nav_films:'Films',nav_challenges:'Défis',nav_questions:'Questions',nav_ranking:'Classement',nav_food:'Nourriture',tagline:'Le plan parfait pour la <b>nuit parfaite</b>',login_sub:'Entrez votre email pour accéder',login_label:'Votre email',login_placeholder:'votemail@exemple.com',login_btn:'Entrer',login_err_invalid:'Entrez un email valide',login_err_denied:'❌ Cet email n\'a pas accès à Dateflix.',login_err_network:'Erreur de vérification.',login_checking:'Vérification...',nav_films_title:'Roulette de films',films_desc:'200 films pour la Saint-Valentin.',film_genre_label:'Genre',film_where_label:'Où regarder',nav_challenges_title:'Cartes défis',challenges_desc:'Appuyez sur la carte pour découvrir le défi.',nav_questions_title:'Jeux de couple',questions_desc:'Choisissez une ambiance et découvrez de nouvelles choses.',nav_ranking_title:'Classement du couple',ranking_desc:'Marquez des points dans les défis et questions.',nav_food_title:'Roulette nourriture',food_desc:'120 options pour les couples.',food_mood_label:'Ambiance de la nuit'},
+  it:{logout:'Esci',nav_films:'Film',nav_challenges:'Sfide',nav_questions:'Domande',nav_ranking:'Classifica',nav_food:'Cibo',tagline:'Il piano perfetto per la <b>notte perfetta</b>',login_sub:'Inserisci la tua email per accedere',login_label:'La tua email',login_placeholder:'tuaemail@esempio.com',login_btn:'Entra',login_err_invalid:'Inserisci un\'email valida',login_err_denied:'❌ Questa email non ha accesso a Dateflix.',login_err_network:'Errore di verifica.',login_checking:'Verifica...',nav_films_title:'Roulette film',films_desc:'200 film per San Valentino.',film_genre_label:'Genere',film_where_label:'Dove guardare',nav_challenges_title:'Carte sfide',challenges_desc:'Tocca la carta per girarla e scoprire la sfida.',nav_questions_title:'Giochi di coppia',questions_desc:'Scegli un atmosfera e scoprite cose nuove.',nav_ranking_title:'Classifica di coppia',ranking_desc:'Segna punti nelle sfide e domande.',nav_food_title:'Roulette cibo',food_desc:'120 opzioni per coppie.',food_mood_label:'Atmosfera della notte'},
+  de:{logout:'Abmelden',nav_films:'Filme',nav_challenges:'Challenges',nav_questions:'Fragen',nav_ranking:'Rangliste',nav_food:'Essen',tagline:'Der perfekte Plan für die <b>perfekte Nacht</b>',login_sub:'E-Mail eingeben um zuzugreifen',login_label:'Deine E-Mail',login_placeholder:'email@beispiel.de',login_btn:'Einloggen',login_err_invalid:'Gib eine gültige E-Mail ein',login_err_denied:'❌ Diese E-Mail hat keinen Zugang.',login_err_network:'Fehler bei der Überprüfung.',login_checking:'Prüfen...',nav_films_title:'Film-Roulette',films_desc:'200 Filme zum Valentinstag.',film_genre_label:'Genre',film_where_label:'Wo schauen',nav_challenges_title:'Challenge-Karten',challenges_desc:'Karte antippen um die Challenge zu entdecken.',nav_questions_title:'Paar-Spiele',questions_desc:'Wähle eine Stimmung und entdeckt neue Dinge.',nav_ranking_title:'Paar-Rangliste',ranking_desc:'Punkte bei Challenges und Fragen sammeln.',nav_food_title:'Essen-Roulette',food_desc:'120 Optionen für Paare.',food_mood_label:'Stimmung der Nacht'},
+  ja:{logout:'ログアウト',nav_films:'映画',nav_challenges:'チャレンジ',nav_questions:'質問',nav_ranking:'ランキング',nav_food:'料理',tagline:'完璧な夜のための<b>完璧なプラン</b>',login_sub:'メールアドレスを入力してアクセス',login_label:'メールアドレス',login_placeholder:'youremail@example.com',login_btn:'入る',login_err_invalid:'有効なメールアドレスを入力',login_err_denied:'❌ このメールはアクセスできません。',login_err_network:'確認エラー。',login_checking:'確認中...',nav_films_title:'映画ルーレット',films_desc:'バレンタインデーの映画200本。',film_genre_label:'ジャンル',film_where_label:'視聴場所',nav_challenges_title:'チャレンジカード',challenges_desc:'カードをタップしてチャレンジを発見しよう。',nav_questions_title:'カップルゲーム',questions_desc:'気分を選んでお互いの新しいことを発見しよう。',nav_ranking_title:'カップルランキング',ranking_desc:'チャレンジと質問でポイントを獲得。',nav_food_title:'料理ルーレット',food_desc:'カップルのための120の選択肢。',food_mood_label:'今夜のムード'}
 };
 
 const CONTENT = {
@@ -1176,7 +1176,7 @@ const CONTENT = {
   challenge_draw:{pt:'Sortear novo desafio',en:'Draw new challenge',es:'Nuevo desafío',fr:'Nouveau défi',it:'Nuova sfida',de:'Neue Challenge',ja:'新しいチャレンジ'},
   challenge_card:{pt:'Carta',en:'Card',es:'Carta',fr:'Carte',it:'Carta',de:'Karte',ja:'カード'},
   q_next:{pt:'Próxima pergunta',en:'Next question',es:'Siguiente pregunta',fr:'Question suivante',it:'Prossima domanda',de:'Nächste Frage',ja:'次の質問'},
-  q_placeholder:{pt:'Escolha uma categoria acima e toque em "Próxima pergunta".',en:'Choose a category above and tap "Next question".',es:'Elige una categoría y toca "Siguiente pregunta".',fr:'Choisissez une catégorie et appuyez sur "Question suivante".',it:'Scegli una categoria e tocca "Prossima domanda".',de:'Wähle eine Kategorie und tippe auf "Nächste Frage".',ja:'カテゴリを選んで「次の質問」をタップ。'},
+  q_placeholder:{pt:'ph_placeholder',en:'Choose a category above and tap "Next question".',es:'Elige una categoría y toca "Siguiente pregunta".',fr:'Choisissez une catégorie et appuyez sur "Question suivante".',it:'Scegli una categoria e tocca "Prossima domanda".',de:'Wähle eine Kategorie und tippe auf "Nächste Frage".',ja:'カテゴリを選んで「次の質問」をタップ。'},
   q_cats:{
     pt:{divertidas:{l:'Divertidas',s:'Leves & soltas'},profundas:{l:'Profundas',s:'De coração'},memorias:{l:'Memórias',s:'Nosso começo'},romance:{l:'Romance',s:'Só nós dois'}},
     en:{divertidas:{l:'Fun',s:'Light & easy'},profundas:{l:'Deep',s:'From the heart'},memorias:{l:'Memories',s:'Our beginning'},romance:{l:'Romance',s:'Just the two of us'}},
