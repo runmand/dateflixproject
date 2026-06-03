@@ -1344,8 +1344,8 @@ function applyAllLang(){
   }
   const listLabel = document.getElementById('listToggleLabel');
   if(listLabel) listLabel.textContent = (TR[lang]||TR.en).film_list || 'Filter list';
-  updateCount();
-  renderList();
+  try{ updateCount(); }catch(e){}
+  try{ renderList(); }catch(e){}
 }
 
 // 4. Lang switcher
@@ -1456,7 +1456,7 @@ document.getElementById('logoutBtn').addEventListener('click', ()=>{
 });
 
 // 7. Init
-applyAllLang();
+try{ applyAllLang(); }catch(e){ console.warn('i18n init error:', e); }
 
 </script>
 </body>
