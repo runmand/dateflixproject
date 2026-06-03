@@ -822,10 +822,15 @@ function filtered(){return allFilms().filter(f=>(activeCat==='Todos'||f.c===acti
 const movieCount=document.getElementById('movieCount');
 function updateCount(){
   const n=filtered().length;
-  if(typeof ct==='function'&&typeof CONTENT!=='undefined'){
-    movieCount.textContent=n===0?ct(CONTENT.film_none):(n+ct(CONTENT.film_count)+(custom.length?' · '+custom.length:''));
-  } else {
-    movieCount.textContent=n===0?'Nenhum filme combina com esse filtro.':(n+' filmes combinam com o filtro');
+  try{
+    if(typeof CONTENT!=='undefined'&&typeof currentLang!=='undefined'){
+      const L=CONTENT;const lang=currentLang;
+      movieCount.textContent=n===0?(L.film_none[lang]||L.film_none.en):(n+(L.film_count[lang]||L.film_count.en)+(custom.length?' · '+custom.length:''));
+    } else {
+      movieCount.textContent=n===0?'Nenhum filme combina com esse filtro.':(n+' filmes combinam com o filtro');
+    }
+  }catch(e){
+    movieCount.textContent=n+' filmes';
   }
 }
 
