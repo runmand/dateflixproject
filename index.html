@@ -1331,6 +1331,19 @@ function applyAllLang(){
   const n0 = document.getElementById('name0'); if(n0&&!n0.value) n0.placeholder = ct(CONTENT.p1);
   const n1 = document.getElementById('name1'); if(n1&&!n1.value) n1.placeholder = ct(CONTENT.p2);
 
+  // Explicitly update elements that need special handling
+  const pickEl2 = document.getElementById('pick');
+  if(pickEl2 && (pickEl2.textContent.trim() === 'Pronto para a estreia?' ||
+     pickEl2.textContent.trim() === 'Ready for the show?' ||
+     pickEl2.textContent.trim() === '¿Listo para el estreno?' ||
+     pickEl2.textContent.trim() === 'Prêt pour la séance?' ||
+     pickEl2.textContent.trim() === 'Pronto per lo spettacolo?' ||
+     pickEl2.textContent.trim() === 'Bereit für die Vorstellung?' ||
+     pickEl2.textContent.trim() === '上映の準備はいい?')) {
+    pickEl2.textContent = (TR[lang]||TR.en).film_ready || 'Ready for the show?';
+  }
+  const listLabel = document.getElementById('listToggleLabel');
+  if(listLabel) listLabel.textContent = (TR[lang]||TR.en).film_list || 'Filter list';
   updateCount();
   renderList();
 }
